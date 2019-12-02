@@ -5,11 +5,16 @@ import java.util.Set;
 
 
 /**
- * Filename:   Graph.java
- * Project:    Social Network
- * Authors:    Zhihao Shu, Han Lintong Sai Teja, Lakshay Goyal
+ * Filename:    SocialNetworkADT.java
+ * Project:     Social Network
+ * Authors:     Zhihao Shu
+ *              Han Lintong
+ *              Lakshay Goyal
+ *              Sai Teja
  * Email: 	zshu9@wisc.edu
- * 
+ *              lhan48@wisc.edu
+ *              lgoyal@wisc.edu
+ *              chokkarapu@wisc.edu
  * Directed and unweighed graph implementation
  */
 
