@@ -1,0 +1,10 @@
+INDEX VERSION 1.131+/Users/apple/Desktop/javafx-sdk-11.0.2/.metadata/.plugins/org.eclipse.jdt.core
+571701976.index
+3066103951.index
+62855857.index
+747720652.index
+1004801309.index
+2032458592.index
+712804364.index
+3347277259.index
+2333962677.index
