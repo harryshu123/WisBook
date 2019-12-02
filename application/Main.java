@@ -50,7 +50,7 @@ public class Main extends Application {
 	// NOTE: this.getParameters().getRaw() will get these also
 	private List<String> args;
 
-	private static final int WINDOW_WIDTH = 3000;
+	private static final int WINDOW_WIDTH = 600;
 	private static final int WINDOW_HEIGHT = 600;
 	private static final String APP_TITLE = "Hello to WisBook!";
 	Random random = new Random();
@@ -64,14 +64,14 @@ public class Main extends Application {
     }
     private static final int R = 10;
     private static final Color lineColor = Color.FIREBRICK.deriveColor(0, 1, 1, .6);
-    private Circle createCircle() {
+    private Circle createCircle(double x,double y) {
         final Circle circle = new Circle(R);
 
         circle.setStroke(Color.WHITE);
         circle.setStrokeWidth(10);
         circle.setStrokeType(StrokeType.INSIDE);
         circle.setFill(Color.WHITE);
-        circle.relocate(0, 0);
+        circle.relocate(x, y);
 
         return circle;
     }
@@ -85,60 +85,46 @@ public class Main extends Application {
 		args = this.getParameters().getRaw();
 
 		//set top label
-		Label title = new Label("WisBook");
-	
-		
-      
-		
-		
-		
-		
-		/////
-//		"0"(0,2)
-//				1(1,0).(drawlineto(0,2))		
+		Label title = new Label("WisBook");	
            
         	GridPane pane = new GridPane();
-        	Circle circle = createCircle();
+        	Circle circle = createCircle(0.0,0.0);
+        	Circle c2= createCircle(100.0,255.0);
     		Text text = new Text("42");
     		text.setBoundsType(TextBoundsType.VISUAL); 
     	
 //    		pane.getChildren().addAll(circle, text);
-         
-		
-		//pane.add(name1,0,0);
+//         
+//			pane.getChildren().add(circle);
 	
-		
-		//nn sm sjis n s msmdns dsi  sins f sR nfksn/sjn s  
-		// sdnjv snd ksd sn m sj f n sf
-		// the main fucrion the main file in the msantsh s=gat  rnubs  jsn  the main insert file 
 		VBox box = new VBox();
 		Line line = new Line();
 		Button name1= new Button("name1");
-		pane.add(name1,0, 0);
+//		pane.add(name1,2, 0);
 		double x= name1.getLayoutX();
 		double y = name1.getLayoutY();
 		System.out.println(x+" "+y);
 		
 		Button  Center = new Button ("Center People");
-		
-		pane.add(Center,1,1);
+//		
+		pane.add(Center,3,1);
 		
 		Button name3= new Button("name3");
-		
+		pane.add(name1, 0, 0);
 		pane.add(name3,0,2);
 		name3.setLayoutX(0);
-		name3.setLayoutY(2);
+//		name3.setLayoutY(2);
 		double x1= name3.getLayoutX();
 		double y1 = name3.getLayoutY();
 		System.out.println(x1+" "+y1);
-		pane.add(new Button("name4"),2,0);
-		pane.add(new Button("name5"),2,2);
+		pane.add(new Button("name4"),4,0);
+		pane.add(new Button("name5"),4,2);
 		
-		line.setStartX(100);
-        line.setStartY(0);
-        line.setEndX(100);
-        line.setEndY(-100);
-        pane.getChildren().add(line);
+//		line.setStartX(100);
+//        line.setStartY(0);
+//        line.setEndX(100);
+//        line.setEndY(-100);
+//        pane.getChildren().add(line);
 		//right box
 		VBox info = new VBox();
 		info.getChildren().add(new Label("Center People Info"));
@@ -182,7 +168,7 @@ public class Main extends Application {
         BorderPane.setAlignment(submit, Pos.CENTER);
 		 submit.setOnAction(event1);
 		//button to the next page
-		
+		Circle c = new Circle();
 		//set left 
 		log.setLeft(text1);
 		BorderPane.setAlignment(text1, Pos.CENTER);
@@ -197,8 +183,13 @@ public class Main extends Application {
 		root.setCenter(info);
 		root.setTop(title);
 		root.setLeft(pane);
-		
-		
+		System.out.println(name3.getLayoutY()+" this");
+
+	double l1 =name1.getWidth();
+	double m= name3.getWidth();
+	System.out.println(l1);
+//Line l= new Line(-30,-500,-300,-30);
+//pane.getChildren().add(l);
 		BorderPane.setAlignment(info, Pos.CENTER);
 		
 		BorderPane.setAlignment(title, Pos.CENTER);

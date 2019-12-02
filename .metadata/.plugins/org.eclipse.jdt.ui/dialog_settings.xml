@@ -14,6 +14,7 @@
 	</section>
 	<section name="quick_assist_proposal_size">
 	</section>
+<<<<<<< HEAD
 	<section name="BuildPathsPropertyPage">
 		<item key="pageIndex" value="0"/>
 	</section>
@@ -44,4 +45,6 @@
 		<item key="DIALOG_HEIGHT" value="639"/>
 		<item key="DIALOG_FONT_NAME" value="1|.AppleSystemUIFont|11.0|0|COCOA|1|.AppleSystemUIFont"/>
 	</section>
+=======
+>>>>>>> b67ae8c593471bc6f6841daf87178191485746f4
 </section>
