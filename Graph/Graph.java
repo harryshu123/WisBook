@@ -6,9 +6,9 @@ import java.util.Set;
 
 /**
  * Filename:   Graph.java
- * Project:    p4
- * Authors:    Zhihao Shu
- * Email: 	   zshu9@wisc.edu
+ * Project:    Social Network
+ * Authors:    Zhihao Shu, Han Lintong Sai Teja, Lakshay Goyal
+ * Email: 	zshu9@wisc.edu
  * 
  * Directed and unweighed graph implementation
  */
