@@ -2,8 +2,10 @@ package application;
 
 
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Random;
+import javafx.scene.shape.Line;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -28,13 +31,21 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Box;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+	
+
+
 	// store any command-line arguments that were entered.
 	// NOTE: this.getParameters().getRaw() will get these also
 	private List<String> args;
@@ -42,18 +53,62 @@ public class Main extends Application {
 	private static final int WINDOW_WIDTH = 600;
 	private static final int WINDOW_HEIGHT = 600;
 	private static final String APP_TITLE = "Hello to WisBook!";
+	Random random = new Random();
+    int numberOfRows = 25;
+    int numberOfColumns = 25;
+    public void addCirclesToGridPane(GridPane gridPane, List<Circle> circles)
+    {
+        
+            gridPane.add(circles.get(0), 0, 0);
+        
+    }
+    private static final int R = 10;
+    private static final Color lineColor = Color.FIREBRICK.deriveColor(0, 1, 1, .6);
+    private Circle createCircle() {
+        final Circle circle = new Circle(R);
+
+        circle.setStroke(Color.WHITE);
+        circle.setStrokeWidth(10);
+        circle.setStrokeType(StrokeType.INSIDE);
+        circle.setFill(Color.WHITE);
+        circle.relocate(0, 0);
+
+        return circle;
+    }
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		
+		
+       
 		// save args example
 		args = this.getParameters().getRaw();
 
 		//set top label
 		Label title = new Label("WisBook");
+	
 		
-		//Left Diagram 
-		GridPane pane = new GridPane();
-		pane.add(new Button("name1"),0,0);
+      
+		
+		
+		
+		
+		/////
+//		"0"(0,2)
+//				1(1,0).(drawlineto(0,2))		
+           
+        	GridPane pane = new GridPane();
+        	Circle circle = createCircle();
+    		Text text = new Text("42");
+    		text.setBoundsType(TextBoundsType.VISUAL); 
+    	
+//    		pane.getChildren().addAll(circle, text);
+         
+		
+		//pane.add(name1,0,0);
+	
+		
+		pane.add(new Button("name1"),0, 0);
 		pane.add(new Button("Center People"),1,1);
 		pane.add(new Button("name3"),0,2);
 		pane.add(new Button("name4"),2,0);
@@ -72,57 +127,45 @@ public class Main extends Application {
 			    "friend1", "friend2", "friend3", "friend4");
 		list.setItems(items);
 		info.getChildren().add(list);
-		
-//		// Creates a canvas that can draw shapes and text
-//		Canvas canvas = new Canvas(WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
-//		GraphicsContext gc = canvas.getGraphicsContext2D();
-//		// Write some text
-//		// Text is filled with the fill color
-//		gc.setFill(Color.GREEN);
-//		gc.setFont(new Font(30));
-//		gc.fillText("Hello World!", 70, 170);
-//		// Draw a line
-//		// Lines use the stroke color
-//		gc.setStroke(Color.BLUE);
-//		gc.setLineWidth(2);
-//		gc.strokeLine(40, 100, 250, 50);
-//		// Draw a few circles
-//		gc.setFill(Color.BLACK);
-//		// The circles draw from the top left, so to center them, subtract the radius from each coordinate
-//		gc.fillOval(40-15, 100-15, 30, 30);
-//		gc.setFill(Color.RED);
-//		gc.fillOval(250-15, 50-15, 30, 30);
-
-		//vbox.getChildren().add(canvas);
-		
-
-		// Main layout is Border Pane example (top,left,center,right,bottom)
 		BorderPane root = new BorderPane();
 		
 		
 		
-		TextField text = new TextField("Please enter the person: ");
+		TextField text1 = new TextField("Please enter the person: ");
 		
 		ListView<String> allpeople = new ListView<String>();
 		ObservableList<String> people = FXCollections.observableArrayList (
 			    "p1", "p2", "p3", "p4","p5","p6");
 		allpeople.setItems(people);
 		
-        Button b = new Button ("Back");
-        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e)
-            {
-                primaryStage.close();
-            }
-        };
-		 b.setOnAction(event);
+     
 		//log page
 		BorderPane log = new BorderPane();
-		//button to the next page
+
+		Scene scene = new Scene(log,WINDOW_WIDTH, WINDOW_HEIGHT);
+		
+		Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 		Button submit = new Button("submit");
+		
+		Line line = new Line();
+        line.setStartX(1);
+        line.setStartY(1);
+        line.setEndX(10.0);
+        line.setEndY(10.0);
+        pane.getChildren().add(line);
+        EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e)
+            {
+                primaryStage.setScene(mainScene);           }
+        };
+        root.setBottom(submit);
+        BorderPane.setAlignment(submit, Pos.CENTER);
+		 submit.setOnAction(event1);
+		//button to the next page
+		
 		//set left 
-		log.setLeft(text);
-		BorderPane.setAlignment(text, Pos.CENTER);
+		log.setLeft(text1);
+		BorderPane.setAlignment(text1, Pos.CENTER);
 		//set right
 		log.setCenter(allpeople);
 		BorderPane.setAlignment(allpeople, Pos.CENTER);
@@ -134,29 +177,34 @@ public class Main extends Application {
 		root.setCenter(info);
 		root.setTop(title);
 		root.setLeft(pane);
-		root.setBottom(b);
+		
 		
 		BorderPane.setAlignment(info, Pos.CENTER);
-		BorderPane.setAlignment(b, Pos.CENTER);
+		
 		BorderPane.setAlignment(title, Pos.CENTER);
 		BorderPane.setAlignment(pane, Pos.BOTTOM_CENTER);
-		
-		
-		
-		
-		
-		
-		
-		Scene scene = new Scene(log,WINDOW_WIDTH, WINDOW_HEIGHT);
-		
-		Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
+		
+		   Button b = new Button ("Back");
+	        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+	            public void handle(ActionEvent e)
+	            {
+	                primaryStage.setScene(scene);           }
+	        };
+	        root.setBottom(b);
+	        BorderPane.setAlignment(b, Pos.CENTER);
+			 b.setOnAction(event);
+			
+		BorderPane.setAlignment(submit, Pos.CENTER);
 		// Add the stuff and set the primary stage
 		primaryStage.setTitle(APP_TITLE);
 		primaryStage.setScene(mainScene);
 		//primaryStage.setScene(scene);
 		primaryStage.show();
 	}
+
+	
+	
 
 	/**
 	 * @param args
