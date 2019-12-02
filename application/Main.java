@@ -65,7 +65,7 @@ public class Main extends Application {
 		info.getChildren().add(new Label("Center People Info"));
 		
 		//bottom button
-		Button back = new Button("Back");
+	
 		
 		
 		ListView<String> list = new ListView<String>();
@@ -109,8 +109,14 @@ public class Main extends Application {
 			    "p1", "p2", "p3", "p4","p5","p6");
 		allpeople.setItems(people);
 		
-		
-		
+        Button b = new Button ("Back");
+        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e)
+            {
+                primaryStage.close();
+            }
+        };
+		 b.setOnAction(event);
 		//log page
 		BorderPane log = new BorderPane();
 		//button to the next page
@@ -129,10 +135,10 @@ public class Main extends Application {
 		root.setCenter(info);
 		root.setTop(title);
 		root.setLeft(pane);
-		root.setBottom(back);
+		root.setBottom(b);
 		
 		BorderPane.setAlignment(info, Pos.CENTER);
-		BorderPane.setAlignment(back, Pos.CENTER);
+		BorderPane.setAlignment(b, Pos.CENTER);
 		BorderPane.setAlignment(title, Pos.CENTER);
 		BorderPane.setAlignment(pane, Pos.BOTTOM_CENTER);
 		
