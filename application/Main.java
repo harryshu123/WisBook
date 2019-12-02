@@ -71,7 +71,7 @@ public class Main extends Application {
         circle.setStrokeWidth(10);
         circle.setStrokeType(StrokeType.INSIDE);
         circle.setFill(Color.WHITE);
-        circle.relocate(x, y);
+        circle.relocate(x,y);
 
         return circle;
     }
@@ -88,13 +88,23 @@ public class Main extends Application {
 		Label title = new Label("WisBook");	
            
         	GridPane pane = new GridPane();
-        	Circle circle = createCircle(0.0,0.0);
-        	Circle c2= createCircle(100.0,255.0);
+        	Circle c1 = createCircle(0.0,2.0);
+        	Circle c2= createCircle(0.0,0.0);
     		Text text = new Text("42");
+    		Text t1= new Text("hello");
     		text.setBoundsType(TextBoundsType.VISUAL); 
+    	t1.setBoundsType(TextBoundsType.VISUAL);
+    	StackPane s = new StackPane();
+    	s.getChildren().addAll(c2,text);
+    	pane.add(s,0,0);
+    	StackPane s1 = new StackPane();
+    	s1.getChildren().addAll(c1,t1);
+    	pane.add(s1,0,2);
     	
-//    		pane.getChildren().addAll(circle, text);
-//         
+//    		pane.add(c1,0,0);
+//    		pane.add(c2,0,2);
+    		
+//         pane.getChildren().addAll(c2,t1);
 //			pane.getChildren().add(circle);
 	
 		VBox box = new VBox();
@@ -110,8 +120,8 @@ public class Main extends Application {
 		pane.add(Center,3,1);
 		
 		Button name3= new Button("name3");
-		pane.add(name1, 0, 0);
-		pane.add(name3,0,2);
+//		pane.add(name1, 0, 0);
+//		pane.add(name3,0,2);
 		name3.setLayoutX(0);
 //		name3.setLayoutY(2);
 		double x1= name3.getLayoutX();
@@ -120,12 +130,13 @@ public class Main extends Application {
 		pane.add(new Button("name4"),4,0);
 		pane.add(new Button("name5"),4,2);
 		
-//		line.setStartX(100);
+//		line.setStartX(0);
 //        line.setStartY(0);
-//        line.setEndX(100);
-//        line.setEndY(-100);
+//        line.setEndX(50);
+//        line.setEndY(-50);
 //        pane.getChildren().add(line);
 		//right box
+		
 		VBox info = new VBox();
 		info.getChildren().add(new Label("Center People Info"));
 		
