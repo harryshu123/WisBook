@@ -50,7 +50,7 @@ public class Main extends Application {
 	// NOTE: this.getParameters().getRaw() will get these also
 	private List<String> args;
 
-	private static final int WINDOW_WIDTH = 600;
+	private static final int WINDOW_WIDTH = 3000;
 	private static final int WINDOW_HEIGHT = 600;
 	private static final String APP_TITLE = "Hello to WisBook!";
 	Random random = new Random();
@@ -79,7 +79,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
-//hello
+		
        
 		// save args example
 		args = this.getParameters().getRaw();
@@ -108,12 +108,37 @@ public class Main extends Application {
 		//pane.add(name1,0,0);
 	
 		
-		pane.add(new Button("name1"),0, 0);
-		pane.add(new Button("Center People"),1,1);
-		pane.add(new Button("name3"),0,2);
+		//nn sm sjis n s msmdns dsi  sins f sR nfksn/sjn s  
+		// sdnjv snd ksd sn m sj f n sf
+		// the main fucrion the main file in the msantsh s=gat  rnubs  jsn  the main insert file 
+		VBox box = new VBox();
+		Line line = new Line();
+		Button name1= new Button("name1");
+		pane.add(name1,0, 0);
+		double x= name1.getLayoutX();
+		double y = name1.getLayoutY();
+		System.out.println(x+" "+y);
+		
+		Button  Center = new Button ("Center People");
+		
+		pane.add(Center,1,1);
+		
+		Button name3= new Button("name3");
+		
+		pane.add(name3,0,2);
+		name3.setLayoutX(0);
+		name3.setLayoutY(2);
+		double x1= name3.getLayoutX();
+		double y1 = name3.getLayoutY();
+		System.out.println(x1+" "+y1);
 		pane.add(new Button("name4"),2,0);
 		pane.add(new Button("name5"),2,2);
 		
+		line.setStartX(100);
+        line.setStartY(0);
+        line.setEndX(100);
+        line.setEndY(-100);
+        pane.getChildren().add(line);
 		//right box
 		VBox info = new VBox();
 		info.getChildren().add(new Label("Center People Info"));
@@ -147,12 +172,7 @@ public class Main extends Application {
 		Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 		Button submit = new Button("submit");
 		
-		Line line = new Line();
-        line.setStartX(1);
-        line.setStartY(1);
-        line.setEndX(10.0);
-        line.setEndY(10.0);
-        pane.getChildren().add(line);
+      
         EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             {
