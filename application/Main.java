@@ -53,6 +53,7 @@ public class Main extends Application {
 		
 		//Left Diagram 
 		GridPane pane = new GridPane();
+	
 		pane.add(new Button("name1"),0,0);
 		pane.add(new Button("Center People"),1,1);
 		pane.add(new Button("name3"),0,2);
