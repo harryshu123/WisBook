@@ -520,6 +520,7 @@ java.nio.file.NoSuchFileException: /Users/apple/Desktop/WisBook/.metadata/.plugi
 	at org.eclipse.core.internal.events.AutoBuildJob.doBuild(AutoBuildJob.java:169)
 	at org.eclipse.core.internal.events.AutoBuildJob.run(AutoBuildJob.java:244)
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+<<<<<<< HEAD
 
 !ENTRY org.eclipse.ui 4 0 2019-12-02 14:20:24.085
 !MESSAGE Unhandled event loop exception
@@ -590,3 +591,5 @@ Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -product org.eclipse.
 
 !ENTRY org.eclipse.egit.core 1 0 2019-12-02 17:05:39.396
 !MESSAGE Using Apache MINA sshd as ssh client.
+=======
+>>>>>>> b67ae8c593471bc6f6841daf87178191485746f4
