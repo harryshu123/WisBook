@@ -1,3 +1,12 @@
+/*
+ Team : A40
+ Project a2(Initial GUI page) Social Network
+ Team Members : Chokkarapu Sai Teja , Lintong Han, Zhihao Shu , Lakshay
+ Date : 12/2/19
+*/
+
+
+
 package application;
 
 
