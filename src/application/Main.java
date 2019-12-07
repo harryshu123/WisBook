@@ -91,7 +91,9 @@ private void setlist(BorderPane log,Graph g,Stage primaryStage,Scene scene) {
 	for(String i : s ) { 
 		Button b3;
 		
+		
 	b3 = new Button (i);
+	
 	log.setCenter(list1);
 	list1.getItems().add(b3);
 System.out.print(i);
@@ -101,9 +103,9 @@ System.out.print(i);
 
 
 //2nd Page friends list
-private void setlist2(BorderPane info,Graph g,String text1,Stage primaryStage,Scene scene) {
+private ListView<Button> setlist2(BorderPane info,Graph g,String text1,Stage primaryStage,Scene scene) {
 	
-	String center=text1;
+	String center=text1;	
 	ListView<Button> list = new ListView<Button>();
 	// f is the friends of the center person 
 	List<String> f=g.getAdjacentVerticesOf(center);
@@ -112,9 +114,22 @@ private void setlist2(BorderPane info,Graph g,String text1,Stage primaryStage,Sc
 		Button b;
 		b = new Button (i);
 		list.getItems().add(b);
+		 EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
+	         public void handle(ActionEvent e)
+	         { 	BorderPane root1= new BorderPane();
+	         	
+	         	Scene secondS = new Scene(root1,WINDOW_WIDTH, WINDOW_HEIGHT);
+	         	secondS=secondScene(b.getText(),primaryStage,scene);
+	         	
+	             primaryStage.setScene(secondS);
+	             }
+	         
+	         
+	     };
+	     b.setOnAction(event1);
 		}
 		info.setRight(list);
-		
+		return list;
 		
 }
 
@@ -171,6 +186,7 @@ Scene secondScene(String text1,Stage primaryStage,Scene scene) {
 	Canvas canvas = new Canvas(WINDOW_WIDTH*(0.7), WINDOW_HEIGHT*(0.7));
 	GraphicsContext gc = canvas.getGraphicsContext2D();
 	BorderPane root= new BorderPane();
+	 ListView<Button> list= new ListView<Button>();
 	Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 	pane =ani_graph(canvas,gc,text1);
 	pane.getChildren().add(canvas);
@@ -178,7 +194,7 @@ Scene secondScene(String text1,Stage primaryStage,Scene scene) {
 	   b1.setOnAction(e->primaryStage.setScene(scene));
 	   root.setBottom(b1);
        BorderPane.setAlignment(b1, Pos.CENTER);
-	setlist2(root,g,text1,primaryStage,scene);
+	list=setlist2(root,g,text1,primaryStage,scene);
 	
 	VBox info = new VBox();
 	Text head= new Text("Friends List");
@@ -208,7 +224,7 @@ Scene secondScene(String text1,Stage primaryStage,Scene scene) {
    
 
 		// Creates a canvas that can draw shapes and text
-				Canvas canvas = new Canvas(WINDOW_WIDTH*(0.7), WINDOW_HEIGHT*(0.7));
+				Canvas canvas = new Canvas(WINDOW_WIDTH*(0.7),  WINDOW_HEIGHT*(0.7));
 				GraphicsContext gc = canvas.getGraphicsContext2D();
 				// Write some text
 				// Text is filled with the fill color
@@ -269,7 +285,7 @@ Scene secondScene(String text1,Stage primaryStage,Scene scene) {
 						Alert alert = new Alert(AlertType.ERROR,"\""+cp+"\""+" is already friend to "+"\""+friend+"\"");
 						alert.showAndWait().filter(r->r==ButtonType.OK);
 					}
-				}	if(!check)g.addEdge(cp, friend);
+				}	if(!check) {g.addEdge(cp, friend);g.addEdge(friend, cp);}
 				System.out.println("size "+g.size());
 				setlist(log,g,primaryStage,scene);
 			//setlist2(root,g,text1.getText());
