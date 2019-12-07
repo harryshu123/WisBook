@@ -21,6 +21,7 @@ import java.util.Random;
 import java.util.Set;
 
 import graph.Graph;
+import graph.Person;
 import javafx.scene.shape.Line;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -71,7 +72,7 @@ Graph g = new Graph();
 int fl=5;
 	// store any command-line arguments that were entered.
 	// NOTE: this.getParameters().getRaw() will get these also
-	private List<String> args;
+	private List<Person> args;
 
 	private static final int WINDOW_WIDTH = 1000;
 	private static final int WINDOW_HEIGHT = 1000;
@@ -83,16 +84,16 @@ int c =15;
 //first page friends list
 private void setlist(BorderPane log,Graph g,Stage primaryStage,Scene scene) {
 	
-    Set<String>s=g.getAllVertices();
-    Set<String>user= new HashSet<String>();
+    Set<Person>s=g.getAllVertices();
+    Set<Person>user= new HashSet<Person>();
     
     
     ListView<Button> list1 = new ListView<Button>();
-	for(String i : s ) { 
+	for(Person i : s ) { 
 		Button b3;
 		
 		
-	b3 = new Button (i);
+	b3 = new Button (i.getName());
 	
 	log.setCenter(list1);
 	list1.getItems().add(b3);
@@ -103,23 +104,24 @@ System.out.print(i);
 
 
 //2nd Page friends list
-private ListView<Button> setlist2(BorderPane info,Graph g,String text1,Stage primaryStage,Scene scene) {
+private ListView<Button> setlist2(BorderPane info,Graph g,Person text1,Stage primaryStage,Scene scene) {
 	
-	String center=text1;	
+	String center=text1.getName();	
 	ListView<Button> list = new ListView<Button>();
 	// f is the friends of the center person 
-	List<String> f=g.getAdjacentVerticesOf(center);
+	List<Person> f=g.getAdjacentVerticesOf(text1);
 	
-		for(String i : f) { 
+		for(Person i : f) { 
 		Button b;
-		b = new Button (i);
+		b = new Button (i.getName());
 		list.getItems().add(b);
 		 EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
 	         public void handle(ActionEvent e)
 	         { 	BorderPane root1= new BorderPane();
-	         	
+	         Person per = null;
+	         	for(Person i : g.getAllVertices()) {if(i.getName().equals(b.getText()))per=i;}
 	         	Scene secondS = new Scene(root1,WINDOW_WIDTH, WINDOW_HEIGHT);
-	         	secondS=secondScene(b.getText(),primaryStage,scene);
+	         	secondS=secondScene(per,primaryStage,scene);
 	         	
 	             primaryStage.setScene(secondS);
 	             }
@@ -133,7 +135,7 @@ private ListView<Button> setlist2(BorderPane info,Graph g,String text1,Stage pri
 		
 }
 
-private GridPane ani_graph(Canvas canvas,GraphicsContext gc,String text1) {gc.setFill(Color.BLUE);
+private GridPane ani_graph(Canvas canvas,GraphicsContext gc,Person text1) {gc.setFill(Color.BLUE);
 HashMap<Integer,vector> map = new HashMap<Integer,vector>();
 //HashMap<Integer,vector> map1 = new HashMap<Integer,vector>();
 GridPane pane= new GridPane();
@@ -147,7 +149,7 @@ map.put(6,new vector(150,350));
 map.put(7,new vector(550,350));
 int j =1;
 int temp =g.order()-1;
-List<String>friends= g.getAdjacentVerticesOf(text1);
+List<Person>friends= g.getAdjacentVerticesOf(text1);
 System.out.println(friends.size()+"   ");
 System.out.println(" this is text 1"+text1);
 int f1 =0;
@@ -155,7 +157,7 @@ for(Map.Entry<Integer,vector> i : map.entrySet()) {
 
 if(f1<friends.size()) {
 	System.out.println("hello macha "+friends.get(f1));
-String k=friends.get(f1++);
+String k=friends.get(f1++).getName();
 gc.fillText(k,	i.getValue().x,i.getValue().y-10);}
 else break;
 gc.fillOval(i.getValue().x,i.getValue().y, 30, 30);
@@ -172,7 +174,7 @@ gc.setStroke(Color.BLUE);
 	gc.setFill(Color.BLACK);
 	
 	// center
-	gc.fillText(text1,350,350-10);
+	gc.fillText(text1.getName(),350,350-10);
 	gc.setFill(Color.RED);
 	gc.fillOval(350,350, 30, 30);
   return pane;
@@ -180,7 +182,7 @@ gc.setStroke(Color.BLUE);
 
 
 	}
-Scene secondScene(String text1,Stage primaryStage,Scene scene) {
+Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 	
 	GridPane pane = new GridPane();
 	Canvas canvas = new Canvas(WINDOW_WIDTH*(0.7), WINDOW_HEIGHT*(0.7));
@@ -212,10 +214,10 @@ Scene secondScene(String text1,Stage primaryStage,Scene scene) {
 	public void start(Stage primaryStage) throws Exception {
 		
 		
-       TextField text1 = new TextField("Enter Center String");
+       TextField text1 = new TextField("Enter Center Person");
 		TextField text2 = new TextField("Enter Friend's name");
 		// save args example
-		args = this.getParameters().getRaw();
+//		args = this.getParameters().getRaw();
 
 		//set top label
 		Label title = new Label("WisBook");	
@@ -266,26 +268,33 @@ Scene secondScene(String text1,Stage primaryStage,Scene scene) {
 		HBox hb = new HBox();
 		hb.getChildren().addAll(ADD,Rem);
 		
-		/// all the enter person unable to use string inside the scope of the EventHandler so used a list.
+		/// all the enter person unable to use Person inside the scope of the EventHandler so used a list.
 		List<String>all= new ArrayList<String>();
 		v.getChildren().add(hb);
+		
+		
+		
+		
 		
 		// setting the action for the ADD button
 			ADD.setOnAction(e->{
 				String cp= text1.getText();
 				String friend= text2.getText();
-			
+			Person p1= new Person(cp);
+			Person p2=new Person (friend);
 				// 0 index is the center person .
 				all.add(0,cp);
 				// "check" is to check if the Centerperson friend is added to the graph or not 
 				boolean check=false;
-				List<String> ff=g.getAdjacentVerticesOf(cp);
-				for(String i : ff) {
-					if(i.equals(friend)) {check=true;
+				Person pcp=null;
+				for(Person i :g.getAllVertices()) {if(i.getName().equals(cp))pcp=i;}
+				List<Person> ff=g.getAdjacentVerticesOf(pcp);
+				for(Person i : ff) {
+					if(i.getName().equals(friend)) {check=true;
 						Alert alert = new Alert(AlertType.ERROR,"\""+cp+"\""+" is already friend to "+"\""+friend+"\"");
 						alert.showAndWait().filter(r->r==ButtonType.OK);
 					}
-				}	if(!check) {g.addEdge(cp, friend);g.addEdge(friend, cp);}
+				}	if(!check) {g.addEdge(p1, p2);g.addEdge(p2, p1);}
 				System.out.println("size "+g.size());
 				setlist(log,g,primaryStage,scene);
 			//setlist2(root,g,text1.getText());
@@ -293,25 +302,38 @@ Scene secondScene(String text1,Stage primaryStage,Scene scene) {
 			System.out.println(all);
 			});
 			setlist(log,g,primaryStage,scene);
+			
+			
+			
+			
 			// setting the action for remove 
 			Rem.setOnAction(e->{
 				String cp= text1.getText();
 				String friend= text2.getText();
-			
+		
 				// 0 index is the center person .
 				all.add(0,cp);
 				// "check" is to check if the Centerperson friend is added to the graph or not 
 				boolean check=false;
-				List<String> ff=g.getAdjacentVerticesOf(cp);
+				Person Center = null,Friend=null;
+				for(Person i :g.getAllVertices()) {if(i.getName().equals(cp))Center=i;}
 				
-				// checking if the center person is the friend the current one or not 
-				for(String i : ff) {
-					if(i.equals(friend)) {check=true;}}
+				List<Person> ff=g.getAdjacentVerticesOf(Center);
+				
+				// checking if the center person is the friend the current one or not
+				
+				
+				for(Person i : ff) {
+					if(i.getName().equals(friend)) {Friend=i;check=true;}}
+				
 				if(!check) {
 					Alert alert = new Alert(AlertType.ERROR,"\""+cp+"\""+" is NOT friend to "+"\""+friend+"\"");
 						alert.showAndWait().filter(r->r==ButtonType.OK);}
 					
-					else g.removeEdge(cp, friend);
+					else g.removeEdge(Center,Friend);
+				
+				
+				for(Person i : ff)
 				System.out.println("size "+g.size());
 				//setlist(log,g,primaryStage,scene);
 			//setlist2(root,g,text1.getText());
@@ -325,9 +347,11 @@ Scene secondScene(String text1,Stage primaryStage,Scene scene) {
         EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
             { 	BorderPane root1= new BorderPane();
-            	
+            	Person p1=null;
+            	//
+            	for(Person i : g.getAllVertices()) {if(i.getName().equals(text1.getText()))p1=i;}
             	Scene secondS = new Scene(root1,WINDOW_WIDTH, WINDOW_HEIGHT);
-            	secondS=secondScene(text1.getText(),primaryStage,scene);
+            	secondS=secondScene(p1,primaryStage,scene);
             	
                 primaryStage.setScene(secondS);
                 }
