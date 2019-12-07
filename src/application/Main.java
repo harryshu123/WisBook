@@ -13,12 +13,14 @@ package application;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import graph.Graph;
 import javafx.scene.shape.Line;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -65,7 +67,7 @@ public class Main extends Application {
 			y=b;
 		}
 	};
-
+Graph g = new Graph();
 int fl=5;
 	// store any command-line arguments that were entered.
 	// NOTE: this.getParameters().getRaw() will get these also
@@ -77,11 +79,125 @@ int fl=5;
 	
     
 int c =15;
+
+//first page friends list
+private void setlist(BorderPane log,Graph g,Stage primaryStage,Scene scene) {
+	
+    Set<String>s=g.getAllVertices();
+    Set<String>user= new HashSet<String>();
+    
+    
+    ListView<Button> list1 = new ListView<Button>();
+	for(String i : s ) { 
+		Button b3;
+		
+	b3 = new Button (i);
+	log.setCenter(list1);
+	list1.getItems().add(b3);
+System.out.print(i);
+	}
+
+}
+
+
+//2nd Page friends list
+private void setlist2(BorderPane info,Graph g,String text1,Stage primaryStage,Scene scene) {
+	
+	String center=text1;
+	ListView<Button> list = new ListView<Button>();
+	// f is the friends of the center person 
+	List<String> f=g.getAdjacentVerticesOf(center);
+	
+		for(String i : f) { 
+		Button b;
+		b = new Button (i);
+		list.getItems().add(b);
+		}
+		info.setRight(list);
+		
+		
+}
+
+private GridPane ani_graph(Canvas canvas,GraphicsContext gc,String text1) {gc.setFill(Color.BLUE);
+HashMap<Integer,vector> map = new HashMap<Integer,vector>();
+//HashMap<Integer,vector> map1 = new HashMap<Integer,vector>();
+GridPane pane= new GridPane();
+map.put(0,new vector(150,150));
+map.put(1,new vector(550,550));
+map.put(2,new vector(550,150));
+map.put(3,new vector(150,550));
+map.put(4,new vector(350,150));
+map.put(5,new vector(350,550));
+map.put(6,new vector(150,350));
+map.put(7,new vector(550,350));
+int j =1;
+int temp =g.order()-1;
+List<String>friends= g.getAdjacentVerticesOf(text1);
+System.out.println(friends.size()+"   ");
+System.out.println(" this is text 1"+text1);
+int f1 =0;
+for(Map.Entry<Integer,vector> i : map.entrySet()) {
+
+if(f1<friends.size()) {
+	System.out.println("hello macha "+friends.get(f1));
+String k=friends.get(f1++);
+gc.fillText(k,	i.getValue().x,i.getValue().y-10);}
+else break;
+gc.fillOval(i.getValue().x,i.getValue().y, 30, 30);
+
+
+gc.setStroke(Color.BLUE);
+	
+	gc.setLineWidth(2);
+	gc.strokeLine(350+c, 350+c, i.getValue().x+c, i.getValue().y+c);
+}
+	
+	
+	// Draw a few circles
+	gc.setFill(Color.BLACK);
+	
+	// center
+	gc.fillText(text1,350,350-10);
+	gc.setFill(Color.RED);
+	gc.fillOval(350,350, 30, 30);
+  return pane;
+//	pane.getChildren().add(canvas);
+
+
+	}
+Scene secondScene(String text1,Stage primaryStage,Scene scene) {
+	
+	GridPane pane = new GridPane();
+	Canvas canvas = new Canvas(WINDOW_WIDTH*(0.7), WINDOW_HEIGHT*(0.7));
+	GraphicsContext gc = canvas.getGraphicsContext2D();
+	BorderPane root= new BorderPane();
+	Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+	pane =ani_graph(canvas,gc,text1);
+	pane.getChildren().add(canvas);
+	Button b1 = new Button ("Back");
+	   b1.setOnAction(e->primaryStage.setScene(scene));
+	   root.setBottom(b1);
+       BorderPane.setAlignment(b1, Pos.CENTER);
+	setlist2(root,g,text1,primaryStage,scene);
+	
+	VBox info = new VBox();
+	Text head= new Text("Friends List");
+	info.getChildren().add(head);
+	info.setAlignment(Pos.TOP_RIGHT);
+	root.setCenter(info);
+	root.setLeft(pane);
+	BorderPane.setAlignment(info, Pos.CENTER);
+	//BorderPane.setAlignment(pane, Pos.BOTTOM_CENTER);
+
+	return mainScene;
+	
+}
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
 		
-       
+       TextField text1 = new TextField("Enter Center String");
+		TextField text2 = new TextField("Enter Friend's name");
 		// save args example
 		args = this.getParameters().getRaw();
 
@@ -96,106 +212,124 @@ int c =15;
 				GraphicsContext gc = canvas.getGraphicsContext2D();
 				// Write some text
 				// Text is filled with the fill color
-				gc.setFill(Color.BLUE);
-			HashMap<Integer,vector> map = new HashMap<Integer,vector>();
-//			HashMap<Integer,vector> map1 = new HashMap<Integer,vector>();
-//			
-		map.put(0,new vector(150,150));
-		map.put(1,new vector(550,550));
-		map.put(2,new vector(550,150));
-		map.put(3,new vector(150,550));
-		map.put(4,new vector(350,150));
-		map.put(5,new vector(350,550));
-		map.put(6,new vector(150,350));
-		map.put(7,new vector(550,350));
- int j =1;
- int temp =fl;
-	for(Map.Entry<Integer,vector> i : map.entrySet()) {
-		if(temp==0)break;
-		String k="Friend "+j++;
-		gc.fillText(k,	i.getValue().x,i.getValue().y-10);
-		gc.fillOval(i.getValue().x,i.getValue().y, 30, 30);temp--;
-	
-		
-		gc.setStroke(Color.BLUE);
-				
-				gc.setLineWidth(2);
-				gc.strokeLine(350+c, 350+c, i.getValue().x+c, i.getValue().y+c);
-	}
 				
 				
-				// Draw a few circles
-				gc.setFill(Color.BLACK);
-				
-				// center
-				gc.fillText("Center Person",350,350-10);
-				gc.setFill(Color.RED);
-				gc.fillOval(350,350, 30, 30);
-				
-				
-				pane.getChildren().add(canvas);
-
-		VBox info = new VBox();
-		info.getChildren().add(new Label("Friends List"));
-		
 		//bottom button
 		System.out.println(c);
-	ListView<Button> list = new ListView<Button>();
-		for(int i =1;i<=fl;i++) { 
-				
-			String k="Friend"+i;
-			Button b;
-		b = new Button (k);
-		list.getItems().add(b);
-//		ObservableList<Button> items = FXCollections.observableArrayList (b);
-//		
-//		list.setItems(items);
-		}
-		info.getChildren().add(list);
-	
-		
-		
+
 		BorderPane root = new BorderPane();
-		
-		
-		
-		TextField text1 = new TextField("Enter and click Submit");
-		
-		ListView<String> allpeople = new ListView<String>();
-		ObservableList<String> people = FXCollections.observableArrayList (
-			    "p1", "p2", "p3", "p4","p5","p6");
-		allpeople.setItems(people);
-		
-     
+
 		//log page
 		BorderPane log = new BorderPane();
 
 		Scene scene = new Scene(log,WINDOW_WIDTH, WINDOW_HEIGHT*(0.7));
 		
 		Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-		Button submit = new Button("submit");
 		
-      
+		// popup window 
+		
+		
+// for the entrance top of the main scene
+        Text t = new Text("People in Social Network");
+     log.setTop(t);
+     log.setAlignment(t, Pos.CENTER);
+//         root.setBottom(submit);
+//        BorderPane.setAlignment(submit, Pos.CENTER);
+	
+		
+		//set left 
+		VBox v = new VBox();
+		v.getChildren().addAll(text1,text2);
+		
+		log.setLeft(v);
+		v.setAlignment(Pos.CENTER);
+		// ADD and re3move for main page
+		Button ADD = new Button ("ADD");
+		Button Rem= new Button ("Remove");
+		//Hbox for add and remove
+		HBox hb = new HBox();
+		hb.getChildren().addAll(ADD,Rem);
+		
+		/// all the enter person unable to use string inside the scope of the EventHandler so used a list.
+		List<String>all= new ArrayList<String>();
+		v.getChildren().add(hb);
+		
+		// setting the action for the ADD button
+			ADD.setOnAction(e->{
+				String cp= text1.getText();
+				String friend= text2.getText();
+			
+				// 0 index is the center person .
+				all.add(0,cp);
+				// "check" is to check if the Centerperson friend is added to the graph or not 
+				boolean check=false;
+				List<String> ff=g.getAdjacentVerticesOf(cp);
+				for(String i : ff) {
+					if(i.equals(friend)) {check=true;
+						Alert alert = new Alert(AlertType.ERROR,"\""+cp+"\""+" is already friend to "+"\""+friend+"\"");
+						alert.showAndWait().filter(r->r==ButtonType.OK);
+					}
+				}	if(!check)g.addEdge(cp, friend);
+				System.out.println("size "+g.size());
+				setlist(log,g,primaryStage,scene);
+			//setlist2(root,g,text1.getText());
+			//ani_graph(pane,canvas,gc,text1.getText());
+			System.out.println(all);
+			});
+			setlist(log,g,primaryStage,scene);
+			// setting the action for remove 
+			Rem.setOnAction(e->{
+				String cp= text1.getText();
+				String friend= text2.getText();
+			
+				// 0 index is the center person .
+				all.add(0,cp);
+				// "check" is to check if the Centerperson friend is added to the graph or not 
+				boolean check=false;
+				List<String> ff=g.getAdjacentVerticesOf(cp);
+				
+				// checking if the center person is the friend the current one or not 
+				for(String i : ff) {
+					if(i.equals(friend)) {check=true;}}
+				if(!check) {
+					Alert alert = new Alert(AlertType.ERROR,"\""+cp+"\""+" is NOT friend to "+"\""+friend+"\"");
+						alert.showAndWait().filter(r->r==ButtonType.OK);}
+					
+					else g.removeEdge(cp, friend);
+				System.out.println("size "+g.size());
+				//setlist(log,g,primaryStage,scene);
+			//setlist2(root,g,text1.getText());
+			//ani_graph(pane,canvas,gc,text1.getText());
+			System.out.println(all);
+			});
+			setlist(log,g,primaryStage,scene);
+			Button submit = new Button("submit");
+		
+    //  submit.setOnAction(e->primaryStage.setScene(mainScene));
         EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
-            {
-                primaryStage.setScene(mainScene);           }
+            { 	BorderPane root1= new BorderPane();
+            	
+            	Scene secondS = new Scene(root1,WINDOW_WIDTH, WINDOW_HEIGHT);
+            	secondS=secondScene(text1.getText(),primaryStage,scene);
+            	
+                primaryStage.setScene(secondS);
+                }
+            
+            
         };
-        root.setBottom(submit);
-        BorderPane.setAlignment(submit, Pos.CENTER);
-		 submit.setOnAction(event1);
-		//button to the next page
-		Circle c = new Circle();
-		//set left 
-		log.setLeft(text1);
-		BorderPane.setAlignment(text1, Pos.CENTER);
-		//set right
-		log.setCenter(allpeople);
-		BorderPane.setAlignment(allpeople, Pos.CENTER);
-		//set bottom
+       	 submit.setOnAction(event1);
+		if(all.size()>0)
+			text1.setText(all.get(0));
+		
+			
+		BorderPane.setAlignment(v, Pos.CENTER);
 		log.setBottom(submit);
 		BorderPane.setAlignment(submit, Pos.CENTER);
-
+		VBox info = new VBox();
+		Text head= new Text("Friends List");
+		info.getChildren().add(head);
+		info.setAlignment(Pos.TOP_RIGHT);
 		root.setCenter(info);
 		root.setTop(title);
 		root.setLeft(pane);
@@ -207,26 +341,31 @@ int c =15;
 
 		
 		   Button b1 = new Button ("Back");
-	        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-	            public void handle(ActionEvent e)
-	            {
-	                primaryStage.setScene(scene);           }
-	        };
+		   b1.setOnAction(e->primaryStage.setScene(scene));
+//	        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+//	            public void handle(ActionEvent e)
+//	            {
+//	            	
+//	            	
+//	            	primaryStage.show();
+//	                primaryStage.setScene(page2); 
+//	               
+//	            }
+//	        };
 	        root.setBottom(b1);
 	        BorderPane.setAlignment(b1, Pos.CENTER);
-			 b1.setOnAction(event);
+//			 b1.setOnAction(event);
+	        
 			
 		BorderPane.setAlignment(submit, Pos.CENTER);
 		// Add the stuff and set the primary stage
 		primaryStage.setTitle(APP_TITLE);
-		primaryStage.setScene(mainScene);
-		//primaryStage.setScene(scene);
+//		primaryStage.setScene(mainScene);
+		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
 
 	
-	
-
 	/**
 	 * @param args
 	 */
