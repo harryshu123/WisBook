@@ -89,16 +89,31 @@ private void setlist(BorderPane log,Graph g,Stage primaryStage,Scene scene) {
     
     
     ListView<Button> list1 = new ListView<Button>();
+    System.out.println("when remove is pressed"+s.size());
 	for(Person i : s ) { 
 		Button b3;
-		
+		System.out.print(i.getName()+" ");
 		
 	b3 = new Button (i.getName());
 	
 	log.setCenter(list1);
 	list1.getItems().add(b3);
-System.out.print(i);
-	}
+	EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
+        public void handle(ActionEvent e)
+        { 	BorderPane root1= new BorderPane();
+        Person per = null;
+        	for(Person i : g.getAllVertices()) {if(i.getName().equals(b3.getText()))per=i;}
+        	Scene secondS = new Scene(root1,WINDOW_WIDTH, WINDOW_HEIGHT);
+        	secondS=secondScene(per,primaryStage,scene);
+        	
+            primaryStage.setScene(secondS);
+            }
+        
+        
+    };
+    b3.setOnAction(event1);
+//System.out.print(i);
+	}System.out.println("DONEZO");
 
 }
 
@@ -288,20 +303,22 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 				boolean check=false;
 				Person pcp=null;
 				for(Person i :g.getAllVertices()) {if(i.getName().equals(cp))pcp=i;}
+				if(pcp!=null) {
 				List<Person> ff=g.getAdjacentVerticesOf(pcp);
 				for(Person i : ff) {
 					if(i.getName().equals(friend)) {check=true;
 						Alert alert = new Alert(AlertType.ERROR,"\""+cp+"\""+" is already friend to "+"\""+friend+"\"");
 						alert.showAndWait().filter(r->r==ButtonType.OK);
 					}
-				}	if(!check) {g.addEdge(p1, p2);g.addEdge(p2, p1);}
+				}	
+				}if(!check) {g.addEdge(p1, p2);g.addEdge(p2, p1);}
 				System.out.println("size "+g.size());
 				setlist(log,g,primaryStage,scene);
 			//setlist2(root,g,text1.getText());
 			//ani_graph(pane,canvas,gc,text1.getText());
 			System.out.println(all);
 			});
-			setlist(log,g,primaryStage,scene);
+		
 			
 			
 			
@@ -335,12 +352,12 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 				
 				for(Person i : ff)
 				System.out.println("size "+g.size());
-				//setlist(log,g,primaryStage,scene);
+				setlist(log,g,primaryStage,scene);
 			//setlist2(root,g,text1.getText());
 			//ani_graph(pane,canvas,gc,text1.getText());
 			System.out.println(all);
 			});
-			setlist(log,g,primaryStage,scene);
+		
 			Button submit = new Button("submit");
 		
     //  submit.setOnAction(e->primaryStage.setScene(mainScene));
