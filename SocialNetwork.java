@@ -89,6 +89,7 @@ public class SocialNetwork implements SocialNetworkADT {
 		if(f1 == null||f2 == null) {
 			return null;
 		}
+		
 		if(!(f1 instanceof Person)||!(f2 instanceof Person)) {
 			System.out.println("not valid person! (get mutual)");
 			return new HashSet();
@@ -143,19 +144,42 @@ public class SocialNetwork implements SocialNetworkADT {
 				  }else {
 					  System.out.println("invalid input!");
 				  }
+				  break;
 			  case "r":
-				  if(splited.length == 2) {//only add vertex
-					 this.removeUser(new Person(splited[1]));
+				  Set<List<Person>> adjList = g.adjList;
+				  if(splited.length == 2) {//only remove vertex
+					 Set<Person> set = g.getAllVertices();
+					 for(Person p: set) {
+						 if(p.name.equals(splited[1])){
+							 g.removeVertex(p);
+						 }
+					 }
 				  }else if(splited.length == 3){
-					  this.removeFriends(new Person(splited[1]), new Person(splited[2]));
+					  for(List<Person> l: adjList) {
+						  if(l.get(0).name.equals(splited[1])) {
+							  for(Person pp: l) {
+								  if(pp.name.equals(splited[2])) {
+									  g.removeEdge(l.get(0), pp);
+									  break;
+								  }
+							  }
+						  }
+					  }
 				  }else {
 					  System.out.println("invalid input!");
 				  }
+				  break;
 			  case "s":
-				  if(!g.getAllVertices().contains(new Person(splited[1]))) {
-					  System.out.println("Center user has problem!!");
+				  Set<Person> set = g.getAllVertices();
+				  for(Person p: set) {
+					  if(p.name.equals(splited[1])) {
+						  CenterUser = new Person(splited[1]);
+						  System.out.println("Set Center Person Successfully");
+						  break;
+					  }
 				  }
-				  CenterUser = new Person(splited[1]);
+				 // System.out.println("Center user has problem!!");
+				  break;
 			  }
 		  }
 		  br.close();
@@ -166,17 +190,30 @@ public class SocialNetwork implements SocialNetworkADT {
 	@Override
 	public void saveToFile(File f1) throws IOException {
 		// TODO Auto-generated method stub
-		FileWriter fw = new FileWriter(f1);
-		Set<List<Person>> adjList = g.adjList;
-		for(List<Person> l : adjList) {
-			for(Person p: l) {
-				fw.write(p.name + " ");
-			}
-			fw.write("\n");
-		}
-		System.out.println("Writing Successfully");
-		fw.close();
+//		FileWriter fw = new FileWriter(f1);
+//		Set<List<Person>> adjList = g.adjList;
+//		for(List<Person> l : adjList) {
+//			for(Person p: l) {
+//				fw.write(p.name + " ");
+//			}
+//			fw.write("\n");
+//		}
+//		System.out.println("Writing Successfully");
+//		fw.close();
 	}
+	
+	
+	public static void main(String[] args) throws IOException, NotAPersonException {
+		SocialNetwork sw = new SocialNetwork();
+		File file = new File("train.txt");
+		sw.loadFromFile(file);
+		System.out.println(sw.g.order);
+		System.out.println(sw.g.size);
+		System.out.println(sw.CenterUser.name);
+		
+	}
+	
+	
 }
 
 
