@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Map$Entry;
 import java.util.Random;
 import java.util.Set;
 
@@ -68,11 +69,13 @@ public class Main extends Application {
 			y=b;
 		}
 	};
+
 Graph g = new Graph();
 int fl=5;
 	// store any command-line arguments that were entered.
 	// NOTE: this.getParameters().getRaw() will get these also
 	private List<Person> args;
+	 List<String> status=new ArrayList<String>();
 
 	private static final int WINDOW_WIDTH = 1000;
 	private static final int WINDOW_HEIGHT = 1000;
@@ -86,17 +89,17 @@ private void setlist(BorderPane log,Graph g,Stage primaryStage,Scene scene) {
 	
     Set<Person>s=g.getAllVertices();
     Set<Person>user= new HashSet<Person>();
-    
+   System.out.println(s+"this is set");
     
     ListView<Button> list1 = new ListView<Button>();
-    System.out.println("when remove is pressed"+s.size());
-	for(Person i : s ) { 
+   
+	for(Person i : s ) {  System.out.println("when remove is pressed"+s.size());
 		Button b3;
 		System.out.print(i.getName()+" ");
 		
 	b3 = new Button (i.getName());
 	
-	log.setCenter(list1);
+	
 	list1.getItems().add(b3);
 	EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
         public void handle(ActionEvent e)
@@ -113,7 +116,7 @@ private void setlist(BorderPane log,Graph g,Stage primaryStage,Scene scene) {
     };
     b3.setOnAction(event1);
 //System.out.print(i);
-	}System.out.println("DONEZO");
+	}log.setCenter(list1);System.out.println("DONEZO");
 
 }
 
@@ -168,7 +171,7 @@ List<Person>friends= g.getAdjacentVerticesOf(text1);
 System.out.println(friends.size()+"   ");
 System.out.println(" this is text 1"+text1);
 int f1 =0;
-for(Map.Entry<Integer,vector> i : map.entrySet()) {
+for(Map.Entry<Integer, vector> i : map.entrySet()) {
 
 if(f1<friends.size()) {
 	System.out.println("hello macha "+friends.get(f1));
@@ -231,6 +234,7 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 		
        TextField text1 = new TextField("Enter Center Person");
 		TextField text2 = new TextField("Enter Friend's name");
+		TextField text3 = new TextField("Enter the User");
 		// save args example
 //		args = this.getParameters().getRaw();
 
@@ -271,38 +275,53 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 	
 		
 		//set left 
+     Text  heading =new Text("\nAdd User\n");
+		Text  heading2 =new Text("\nAdd/Remove the Relationships\n");
+		Button AddUser= new Button ("ADD User");
+		Button RemoveUser = new Button ("Remove User");
 		VBox v = new VBox();
-		v.getChildren().addAll(text1,text2);
-		
+		v.getChildren().addAll(heading,text3,AddUser,RemoveUser);
 		log.setLeft(v);
 		v.setAlignment(Pos.CENTER);
 		// ADD and re3move for main page
 		Button ADD = new Button ("ADD");
 		Button Rem= new Button ("Remove");
+		
+		
+		
 		//Hbox for add and remove
 		HBox hb = new HBox();
-		hb.getChildren().addAll(ADD,Rem);
+		
 		
 		/// all the enter person unable to use Person inside the scope of the EventHandler so used a list.
 		List<String>all= new ArrayList<String>();
-		v.getChildren().add(hb);
-		
-		
-		
-		
-		
+		v.getChildren().addAll(heading2,text1,text2,hb);
+		hb.getChildren().addAll(ADD,Rem);
+
 		// setting the action for the ADD button
 			ADD.setOnAction(e->{
 				String cp= text1.getText();
 				String friend= text2.getText();
 			Person p1= new Person(cp);
 			Person p2=new Person (friend);
+			//adding to the word
+			
 				// 0 index is the center person .
 				all.add(0,cp);
+				Alert a =new Alert(AlertType.ERROR,"\""+"Two persons are with the same name");
+				
+				
+				Alert  alert1= new Alert(AlertType.ERROR,"\""+" xx DO NOT ENTER NULL INPUT xx");
 				// "check" is to check if the Centerperson friend is added to the graph or not 
+				
 				boolean check=false;
+			//	boolean_
 				Person pcp=null;
-				for(Person i :g.getAllVertices()) {if(i.getName().equals(cp))pcp=i;}
+				Person fcp=null;
+				for(Person i :g.getAllVertices()) {if(i.getName().equals(cp))pcp=i;
+				
+				if(i.getName().equals(friend))fcp=i;
+				}
 				if(pcp!=null) {
 				List<Person> ff=g.getAdjacentVerticesOf(pcp);
 				for(Person i : ff) {
@@ -311,23 +330,34 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 						alert.showAndWait().filter(r->r==ButtonType.OK);
 					}
 				}	
-				}if(!check) {g.addEdge(p1, p2);g.addEdge(p2, p1);}
+				}if(cp.equals(friend)||(cp==null||friend==null))a.showAndWait().filter(r->r==ButtonType.OK);
+				else if (cp.length()==0||friend.length()==0) {
+					
+					alert1.showAndWait().filter(r->r==(ButtonType.OK));}
+				else if(check==false) {g.addEdge(p1, p2); 
+				g.addEdge(p2, p1);
+				}
+				
+				
+				else if (cp.length()==0&&friend.length()!=0)g.addVertex(fcp);
+				else if (friend.length()!=0&&cp.length()==0)g.addVertex(pcp);
 				System.out.println("size "+g.size());
 				setlist(log,g,primaryStage,scene);
+				status.add("a "+cp+" "+friend);
 			//setlist2(root,g,text1.getText());
 			//ani_graph(pane,canvas,gc,text1.getText());
 			System.out.println(all);
-			});
+			}); 
 		
 			
 			
 			
-			
+		
 			// setting the action for remove 
 			Rem.setOnAction(e->{
 				String cp= text1.getText();
 				String friend= text2.getText();
-		
+			
 				// 0 index is the center person .
 				all.add(0,cp);
 				// "check" is to check if the Centerperson friend is added to the graph or not 
@@ -347,19 +377,71 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 					Alert alert = new Alert(AlertType.ERROR,"\""+cp+"\""+" is NOT friend to "+"\""+friend+"\"");
 						alert.showAndWait().filter(r->r==ButtonType.OK);}
 					
-					else g.removeEdge(Center,Friend);
+					else {g.removeEdge(Center,Friend);}
 				
 				
-				for(Person i : ff)
-				System.out.println("size "+g.size());
+				for(Person i : ff) {
+					
+				System.out.println("size "+g.size());}
 				setlist(log,g,primaryStage,scene);
 			//setlist2(root,g,text1.getText());
+				//adding to the log
+		status.add("r "+cp+" "+friend);
 			//ani_graph(pane,canvas,gc,text1.getText());
 			System.out.println(all);
 			});
 		
-			Button submit = new Button("submit");
+			
+			// add the user
+			AddUser.setOnAction(e->{
+				
+				boolean check =false;
+				String u= text3.getText();
+				//adding to the log
+				status.add("a "+u);
+				Person per = new Person (u);
+				for(Person i: g.getAllVertices()) {
+					if(i.getName().equals(u)) {check =true;}
+				}
+				if(!check) {
+				g.addVertex(per);
+				}
+				
+				setlist(log,g,primaryStage,scene);
+				
+		});
+			
+			// remove the user
+			
+			RemoveUser.setOnAction(e->{
+				boolean check =false;
+				String u= text3.getText();
+				status.add("r "+u);
+				Person per = null;
+				for(Person i: g.getAllVertices()) {
+					if(i.getName().equals(u)) {check =true;per=i;}
+				}
+				if(check) {System.out.print(g.order()+"shda snbjdsdhjsbad");
+				g.removeVertex(per);
+				System.out.println(g.getAllVertices());
+				}
+				
+				setlist(log,g,primaryStage,scene);
+				
+		});
 		
+			Button submit = new Button(" submit ");
+			Button  load= new Button (" Load File ");
+			Button export = new Button (" Export ");
+			Button clear= new Button (" Clear ");
+			
+			clear.setOnAction(e->{
+				for(Person i :g.getAllVertices()) {
+					g.removeVertex(i);
+				}
+				setlist(log,g,primaryStage,scene);
+				System.out.println(g.getAllVertices()+"vertices");
+			});
     //  submit.setOnAction(e->primaryStage.setScene(mainScene));
         EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
@@ -373,16 +455,19 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
                 primaryStage.setScene(secondS);
                 }
             
-            
         };
+        
+        
        	 submit.setOnAction(event1);
-		if(all.size()>0)
+		if(all.size()>0) {
 			text1.setText(all.get(0));
-		
-			
+		}
+			HBox bot= new HBox();
+			bot.getChildren().addAll(submit,load,export,clear);
+			bot.setAlignment(Pos.BOTTOM_CENTER);
 		BorderPane.setAlignment(v, Pos.CENTER);
-		log.setBottom(submit);
-		BorderPane.setAlignment(submit, Pos.CENTER);
+		log.setBottom(bot);
+		BorderPane.setAlignment(bot, Pos.CENTER);
 		VBox info = new VBox();
 		Text head= new Text("Friends List");
 		info.getChildren().add(head);
@@ -413,7 +498,8 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 	        BorderPane.setAlignment(b1, Pos.CENTER);
 //			 b1.setOnAction(event);
 	        
-			
+//			System.out.pri
+	        
 		BorderPane.setAlignment(submit, Pos.CENTER);
 		// Add the stuff and set the primary stage
 		primaryStage.setTitle(APP_TITLE);
