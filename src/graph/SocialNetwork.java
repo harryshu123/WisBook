@@ -6,20 +6,25 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Set;
 
+import graph.Person;
+
+
+
+
+
 public class SocialNetwork implements SocialNetworkADT {
-	Graph g = new Graph();
-	Person CenterUser;
+	public Graph g = new Graph();
+	List<String>status = new ArrayList<String>();
+	public Person CenterUser;
 	@Override
-	public boolean addFriends(Person f1, Person f2) throws NotAPersonException {
+	public boolean addFriends(Person f1, Person f2) {
 		// TODO Auto-generated method stub
 		if(f1 == null||f2 == null) {
 			return false;
@@ -31,9 +36,20 @@ public class SocialNetwork implements SocialNetworkADT {
 			return false;
 		}
 		g.addEdge(f1, f2);
+		g.addEdge(f2, f1);
+		//status.add("a "+f1.getName()+" "+f1.getName());
+		
 		return true;
+		
 	}
-
+	private boolean CheckValidName(String s) throws UnsupportedEncodingException
+	{boolean res=true;
+	byte[] bytes = s.getBytes("US-ASCII");
+		for(int i : bytes) {
+		if(!((i>=65&&i<=90)||(i>=97&&i<=122)||(i==95)||(i>=48&&i<=57)||i==39))res=false;
+		}
+		return res;
+		}
 	@Override
 	public boolean removeFriends(Person f1, Person f2) {
 		// TODO Auto-generated method stub
@@ -47,21 +63,25 @@ public class SocialNetwork implements SocialNetworkADT {
 			return false;
 		}
 		g.removeEdge(f1, f2);
+		g.removeEdge(f2, f1);
+		//	status.add("r "+" "+f1.getName()+" "+f2.getName());
 		return true;
 	}
 
 	@Override
-	public boolean addUser(Person u1) {
+	public boolean addUser(Person u1) throws UnsupportedEncodingException {
 		// TODO Auto-generated method stub
 		if(!(u1 instanceof Person)) {
 			return false;
 		}
+	//	if(CheckValidName(u1.getName())) {
 		g.addVertex(u1);
+		//status.add("a"+" "+u1.getName());}
 		return true;
 	}
 
 	@Override
-	public boolean removeUser(Person u1) {
+	public boolean removeUser(Person u1) throws UnsupportedEncodingException {
 		// TODO Auto-generated method stub
 		if(!(u1 instanceof Person)) {
 			return false;
@@ -70,11 +90,13 @@ public class SocialNetwork implements SocialNetworkADT {
 			return false;
 		}
 		g.removeVertex(u1);
+		//status.add("r "+" "+u1.getName());
 		return true;
+		
 	}
 
 	@Override
-	public Set<Person> getFriends(Person u1) throws NotAPersonException {
+	public Set<Person> getFriends(Person u1) {
 		// TODO Auto-generated method stub
 		if(!(u1 instanceof Person)) {
 			return null;
@@ -111,11 +133,7 @@ public class SocialNetwork implements SocialNetworkADT {
 		return result;
 	}
 
-	
-	
-	
-	
-	
+
 	@Override
 	public Set<String> getShortestPath(Person f1, Person f2) {
 		// TODO Auto-generated method stub
@@ -175,15 +193,11 @@ public class SocialNetwork implements SocialNetworkADT {
 
 	
 	
+	
 	@Override
-	public Set<Graph> getConnectedComponents() {
+	public void loadFromFile(File f1) throws IOException {
 		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void loadFromFile(File f1) throws IOException, NotAPersonException {
-		// TODO Auto-generated method stub
+	
 		BufferedReader br = new BufferedReader(new FileReader(f1));
 		String st; 
 		  while ((st = br.readLine()) != null) {
@@ -192,9 +206,15 @@ public class SocialNetwork implements SocialNetworkADT {
 			  switch(instruction) {
 			  case "a":
 				  if(splited.length == 2) {//only add vertex
-					  this.addUser(new Person(splited[1]));
+
+						if(CheckValidName(splited[1])) {
+							status.add("a"+" "+splited[1]);
+					  this.addUser(new Person(splited[1]));}
 				  }else if(splited.length == 3){
+					  if(CheckValidName(splited[1])&&CheckValidName(splited[2])) {
 					  this.addFriends(new Person(splited[1]), new Person(splited[2]));
+					  
+					  status.add("a"+" "+splited[1]+" "+splited[2]);}
 				  }else {
 					  System.out.println("invalid input!");
 				  }
@@ -205,7 +225,9 @@ public class SocialNetwork implements SocialNetworkADT {
 					 Set<Person> set = g.getAllVertices();
 					 for(Person p: set) {
 						 if(p.name.equals(splited[1])){
-							 g.removeVertex(p);
+							 if(CheckValidName(splited[1])) {
+									status.add("r"+" "+splited[1]);
+							  this.removeUser(new Person(splited[1]));}
 						 }
 					 }
 				  }else if(splited.length == 3){
@@ -213,7 +235,11 @@ public class SocialNetwork implements SocialNetworkADT {
 						  if(l.get(0).name.equals(splited[1])) {
 							  for(Person pp: l) {
 								  if(pp.name.equals(splited[2])) {
-									  g.removeEdge(l.get(0), pp);
+									  if(CheckValidName(splited[1])) {
+											status.add("r"+" "+l.get(0).getName()+" "+pp.getName());
+									g.removeEdge(l.get(0), pp);}
+								 
+									  
 									  break;
 								  }
 							  }
@@ -227,8 +253,10 @@ public class SocialNetwork implements SocialNetworkADT {
 				  Set<Person> set = g.getAllVertices();
 				  for(Person p: set) {
 					  if(p.name.equals(splited[1])) {
+						  if(CheckValidName(splited[1])) {
+								status.add("s"+" "+splited[1]);
 						  CenterUser = new Person(splited[1]);
-						  System.out.println("Set Center Person Successfully");
+						  System.out.println("Set Center Person Successfully");}
 						  break;
 					  }
 				  }
@@ -241,9 +269,24 @@ public class SocialNetwork implements SocialNetworkADT {
 		
 	}
 
+
 	@Override
-	public void saveToFile(File f1) throws IOException {
-		// TODO Auto-generated method stub
+	public Set<Graph> getConnectedComponents(Graph g) {
+	
+		
+	
+		return new HashSet();
+	}
+
+	
+	public List<String>  Log(){
+		
+		return status;
+	};
+	
+	@Override
+//	public void saveToFile(File f1) throws IOException {
+//		// TODO Auto-generated method stub
 //		FileWriter fw = new FileWriter(f1);
 //		Set<List<Person>> adjList = g.adjList;
 //		for(List<Person> l : adjList) {
@@ -254,62 +297,31 @@ public class SocialNetwork implements SocialNetworkADT {
 //		}
 //		System.out.println("Writing Successfully");
 //		fw.close();
+//	}
+	
+	public  void saveToFile(File  f1,List<String> status) throws IOException {
+		// TODO Auto-generated method stub
+		
+		FileWriter fw = new FileWriter(f1);
+		for(String l : status) {
+			
+				fw.write(l+ " ");
+			
+			fw.write("\n");
+		}
+		System.out.println("Writing Successfully");
+		fw.close();
 	}
 	
-	
-	public static void main(String[] args) throws IOException, NotAPersonException {
-//		SocialNetwork sw = new SocialNetwork();
-//		File file = new File("train.txt");
-//		sw.loadFromFile(file);
+	public static void main(String[] args) throws IOException  {
+		SocialNetwork sw = new SocialNetwork();
+		File file = new File("/Users/BUNNY/eclipse-workspace/HelloFX/src/train");
+	//	sw.loadFromFile(file);
 //		System.out.println(sw.g.order);
 //		System.out.println(sw.g.size);
 //		System.out.println(sw.CenterUser.name);
-		int V = 5; 
-        String source = "harry"; 
-  
-        // Adjacency list representation of the  
-        // connected edges 
-        HashMap<String,List<Node> > adj = new HashMap<String,List<Node> >(); 
-  
-        // Initialize list for every node 
-       
-           
-            adj.put("harry",new ArrayList<Node>()); 
-            adj.put("sai",new ArrayList<Node>()); 
-            adj.put("joe",new ArrayList<Node>()); 
-            adj.put("zed",new ArrayList<Node>()); 
-            adj.put("lee",new ArrayList<Node>()); 
-            adj.put("leona",new ArrayList<Node>()); 
-            adj.put("xxx",new ArrayList<Node>()); 
-            
-         
-  
-        // Inputs for the DPQ graph 
-        adj.get("harry").add(new Node("sai", 1)); 
-        adj.get("harry").add(new Node("joe", 1)); 
-        adj.get("harry").add(new Node("zed", 1)); 
-        adj.get("harry").add(new Node("lee", 1)); 
-  
-        
-        adj.get("lee").add(new Node("xxx", 1)); 
-        adj.get("joe").add(new Node("leona", 1)); 
-        adj.get("joe").add(new Node("sai", 1)); 
-        adj.get("joe").add(new Node("zed", 1)); 
-  
-        // Calculate the single source shortest path 
-        DPQ dpq = new DPQ(V); 
-        dpq.dijkstra(adj, source); 
-  
-        // Print the shortest path to all the nodes 
-        // from the source node 
-        System.out.println(adj.get("harry").size());
-        System.out.println("The shorted path from node :"); 
-       System.out.println(dpq.parent);
-            System.out.println(source + " to " + "xxx" + " is "
-                               + dpq.dist.get("xxx")); 
-	}
 		
-	
+	}
 	
 	
 }
