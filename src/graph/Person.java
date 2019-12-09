@@ -1,7 +1,7 @@
 package graph;
 
 public class Person implements Comparable<Person> {
-	String name;
+	public String name;
 	
 	public String getName() {
 		return name;

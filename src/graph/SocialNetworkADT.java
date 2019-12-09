@@ -1,8 +1,13 @@
 package	graph;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Set;
+
+import graph.Person;
 
 /**
  * Filename:    SocialNetworkADT.java
@@ -23,63 +28,77 @@ import java.util.Set;
 public interface SocialNetworkADT {
 	
 	// check if any user is null 
-	// if the user null then throw NullPointerException
+	// if the user null then return false
 	// add both users if any users is not present
 	// if both users already exists
 	// add a relationship between the the two users
-	public boolean addFriends(String f1, String f2);
+	public boolean addFriends(Person f1, Person f2)throws UnsupportedEncodingException; ;
 	
 	// check if any user is null 
-	// if any user null then throw NullPointerException
+	// if any user null then return false
 	// check if both users exists
-	// if any of the users doesn't exists throw an Exception
+	// if any of the users doesn't exists return false
 	// check if the relationship exists between both users
 	// if a relationship exists then remove the relationship between the two
 	// if a relationship doesn't exists then do nothing 
-	public boolean removeFriends(String f1, String f2);
+	public boolean removeFriends(Person f1, Person f2)throws UnsupportedEncodingException;;
 	
 	// check if any user is null 
-	// if any user null then throw NullPointerException
+	// if any user null then return false
 	// check if user is already present 
 	// if user is present then throw an error
 	// if user not present add user 
-	public boolean addUser(String u1);
+	public boolean addUser(Person u1) throws UnsupportedEncodingException;
 	
 	// check if any user is null 
-	// if any user null then throw NullPointerException
+	// if any user null then return false
 	// check if the user is present, 
 	// if user is present then remove the user and all its relationships
 	// if user not present throw an error
-	public boolean removeUser(String u1);
+	public boolean removeUser(Person u1)throws UnsupportedEncodingException;;
 
 	// check if user is null
-	// if user null throw an exception
+	// if user null return null
 	// check if user is present
 	// if user present then return a set of Persons containing all the people who have relationship with that particular user
 	// if user not present throw an empty set
-	public Set<Person> getFriends(String u1);
+	public Set<Person> getFriends(Person u1);
 	
 	// check if any user is null
-	// if any user null throw an exception
+	// if any user null return null
 	// check if  both user are present
 	// if both user are present then return a set of Persons containing all the people who have relationship with both user
 	// if any user is not present throw an empty set
-	public Set<Person> getMutualFriends(String f1, String f2);
+	public Set<Person> getMutualFriends(Person f1, Person f2);
 	
 	// check if any user is null
-	// if any user null throw an exception
+	// if any user null return null
 	// check if  both user are present
 	// if both user are present then return aList of Persons containing the shortest path between both the users
 	// if any user is not present throw an empty set
-	public List<Person> getShortestPath(String f1, String f2);
-	
-	public Set<Graph> getConnectedComponents();
+	public Set<Person> getShortestPath(Person f1, Person f2);
+
 	
 	// load the data from file
 	// parse the file
 	// and 
-	public void loadFromFile(File f1);
-	public void saveToFile(File f1);
+	
+	
+	// write the status into the log after each of the instruction in the file
+	public List<String>  Log();
+	
+	// loads the instruction from the file 
+	public void loadFromFile(File f1) throws IOException;
+	
+	
+
+	// get the Individual components of the graph !
+	Set<Graph> getConnectedComponents(Graph g);
+
+	
+	// saves the file to the given location 
+
+	void saveToFile(File f1, List<String> status) throws IOException;
 	
 
  

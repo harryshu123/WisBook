@@ -22,9 +22,9 @@ import java.util.Set;
 
 public class Graph implements GraphADT {
 	
-	int size; //number of edges
+	public int size; //number of edges
 	Set<List<Person>> adjList; 
-	int order; // number of vertices
+	public int order; // number of vertices
 	
 	
 	/*

@@ -10,19 +10,23 @@
 package application;
 
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Map$Entry;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
 import graph.Graph;
 import graph.Person;
+import graph.SocialNetwork;
 import javafx.scene.shape.Line;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -43,6 +47,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -70,7 +75,7 @@ public class Main extends Application {
 		}
 	};
 
-Graph g = new Graph();
+static Graph g = new Graph();
 int fl=5;
 	// store any command-line arguments that were entered.
 	// NOTE: this.getParameters().getRaw() will get these also
@@ -84,6 +89,14 @@ int fl=5;
     
 int c =15;
 
+private boolean CheckValidName(String s) throws UnsupportedEncodingException
+{boolean res=true;
+byte[] bytes = s.getBytes("US-ASCII");
+	for(int i : bytes) {
+	if(!((i>=65&&i<=90)||(i>=97&&i<=122)||(i==95)||(i>=48&&i<=57)||i==39))res=false;
+	}
+	return res;
+	}
 //first page friends list
 private void setlist(BorderPane log,Graph g,Stage primaryStage,Scene scene) {
 	
@@ -270,10 +283,37 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
         Text t = new Text("People in Social Network");
      log.setTop(t);
      log.setAlignment(t, Pos.CENTER);
-//         root.setBottom(submit);
-//        BorderPane.setAlignment(submit, Pos.CENTER);
-	
+
+     
+     
+     
+     /// submit button 
+     Button submit = new Button(" Search ");
 		
+		Text search = new Text("\nSearch\n");
+		TextField searcht = new TextField("ENTER PERSON TO BE SEARCHED");
+		VBox Vsearch = new VBox();
+		Vsearch.getChildren().addAll(search,searcht,submit);
+		
+//  submit.setOnAction(e->primaryStage.setScene(mainScene));
+ EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
+     public void handle(ActionEvent e)
+     { 	BorderPane root1= new BorderPane();
+     	Person p1=null;
+     	//
+     	for(Person i : g.getAllVertices()) {if(i.getName().equals(searcht.getText()))p1=i;}
+     	Scene secondS = new Scene(root1,WINDOW_WIDTH, WINDOW_HEIGHT);
+     	if(p1==null) {
+     		Alert alert = new Alert(AlertType.ERROR,"Person Not Found");
+			alert.showAndWait().filter(r->r==ButtonType.OK);
+     	}
+     	else {
+     	secondS=secondScene(p1,primaryStage,scene);
+     	
+         primaryStage.setScene(secondS);}
+         }
+ };
+submit.setOnAction(event1);	
 		//set left 
      Text  heading =new Text("\nAdd User\n");
 		Text  heading2 =new Text("\nAdd/Remove the Relationships\n");
@@ -288,20 +328,51 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 		Button Rem= new Button ("Remove");
 		
 		
-		
 		//Hbox for add and remove
 		HBox hb = new HBox();
 		
 		
 		/// all the enter person unable to use Person inside the scope of the EventHandler so used a list.
 		List<String>all= new ArrayList<String>();
-		v.getChildren().addAll(heading2,text1,text2,hb);
+		v.getChildren().addAll(heading2,text1,text2,hb,Vsearch);
 		hb.getChildren().addAll(ADD,Rem);
+		
+		
+		
 
-		// setting the action for the ADD button
+			// setting the action for the ADD button
 			ADD.setOnAction(e->{
+				
+				
 				String cp= text1.getText();
 				String friend= text2.getText();
+				// checking if the entered user or the friend is valid 
+				Alert InValidName1 = new Alert(AlertType.ERROR,"Accepted person of type , Alphabets , Digits ,Underscore, Apostrophe.");
+				Alert InValidName2 = new Alert(AlertType.ERROR,"Entered Friend is Invalid");
+				boolean CheckInvalid = false;
+				// checking if the name is invalid
+				try {
+					if(!CheckValidName(cp)) {
+						InValidName1.showAndWait().filter(r->r==ButtonType.OK);
+						CheckInvalid=true;
+					}
+				} catch (UnsupportedEncodingException e1) {
+					// TODO Auto-generated catch block
+					InValidName1.showAndWait().filter(r->r==ButtonType.OK);
+					e1.printStackTrace();
+				}
+				try {
+					if(!CheckValidName(friend)) {
+						InValidName2.showAndWait().filter(r->r==ButtonType.OK);
+						CheckInvalid=true;
+					}
+				} catch (UnsupportedEncodingException e1) {
+					// TODO Auto-generated catch block
+					InValidName2.showAndWait().filter(r->r==ButtonType.OK);
+					e1.printStackTrace();
+				}
+				// user is added only if the entered name is valid
+				if(!CheckInvalid) {
 			Person p1= new Person(cp);
 			Person p2=new Person (friend);
 			//adding to the word
@@ -343,10 +414,12 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 				else if (friend.length()!=0&&cp.length()==0)g.addVertex(pcp);
 				System.out.println("size "+g.size());
 				setlist(log,g,primaryStage,scene);
-				status.add("a "+cp+" "+friend);
+				status.add("a "+cp+" "+friend);	System.out.println("checking");
+				for(Person i : g.getAllVertices())
+				System.out.println(i.getName());
 			//setlist2(root,g,text1.getText());
 			//ani_graph(pane,canvas,gc,text1.getText());
-			System.out.println(all);
+			System.out.println(all);}
 			}); 
 		
 			
@@ -357,7 +430,32 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 			Rem.setOnAction(e->{
 				String cp= text1.getText();
 				String friend= text2.getText();
-			
+				Alert InValidName1 = new Alert(AlertType.ERROR,"Accepted person of type , Alphabets , Digits ,Underscore, Apostrophe.");
+				Alert InValidName2 = new Alert(AlertType.ERROR,"Entered Friend is Invalid");
+				boolean CheckInvalid = false;
+				// checking if the name is invalid
+				try {
+					if(!CheckValidName(cp)) {
+						InValidName1.showAndWait().filter(r->r==ButtonType.OK);
+						CheckInvalid=true;
+					}
+				} catch (UnsupportedEncodingException e1) {
+					// TODO Auto-generated catch block
+					InValidName1.showAndWait().filter(r->r==ButtonType.OK);
+					e1.printStackTrace();
+				}
+				try {
+					if(!CheckValidName(friend)) {
+						InValidName2.showAndWait().filter(r->r==ButtonType.OK);
+						CheckInvalid=true;
+					}
+				} catch (UnsupportedEncodingException e1) {
+					// TODO Auto-generated catch block
+					InValidName2.showAndWait().filter(r->r==ButtonType.OK);
+					e1.printStackTrace();
+				}
+				// user is added only if the entered name is valid
+				if(!CheckInvalid) {
 				// 0 index is the center person .
 				all.add(0,cp);
 				// "check" is to check if the Centerperson friend is added to the graph or not 
@@ -388,7 +486,7 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 				//adding to the log
 		status.add("r "+cp+" "+friend);
 			//ani_graph(pane,canvas,gc,text1.getText());
-			System.out.println(all);
+			System.out.println(all);}
 			});
 		
 			
@@ -397,6 +495,22 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 				
 				boolean check =false;
 				String u= text3.getText();
+				Alert InValidName1 = new Alert(AlertType.ERROR,"Accepted person of type , Alphabets , Digits ,Underscore, Apostrophe.");
+				boolean CheckInvalid = false;
+				// checking if the name is invalid
+				try {
+					if(!CheckValidName(u)) {
+						InValidName1.showAndWait().filter(r->r==ButtonType.OK);
+						CheckInvalid=true;
+					}
+				} catch (UnsupportedEncodingException e1) {
+					// TODO Auto-generated catch block
+					InValidName1.showAndWait().filter(r->r==ButtonType.OK);
+					e1.printStackTrace();
+				}
+				
+				// user is added only if the entered name is valid
+				if(!CheckInvalid) {
 				//adding to the log
 				status.add("a "+u);
 				Person per = new Person (u);
@@ -406,16 +520,30 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 				if(!check) {
 				g.addVertex(per);
 				}
-				
+			
 				setlist(log,g,primaryStage,scene);
-				
+				}
 		});
-			
 			// remove the user
-			
 			RemoveUser.setOnAction(e->{
 				boolean check =false;
 				String u= text3.getText();
+				Alert InValidName1 = new Alert(AlertType.ERROR,"Accepted person of type , Alphabets , Digits ,Underscore, Apostrophe.");
+				boolean CheckInvalid = false;
+				// checking if the name is invalid
+				try {
+					if(!CheckValidName(u)) {
+						InValidName1.showAndWait().filter(r->r==ButtonType.OK);
+						CheckInvalid=true;
+					}
+				} catch (UnsupportedEncodingException e1) {
+					// TODO Auto-generated catch block
+					InValidName1.showAndWait().filter(r->r==ButtonType.OK);
+					e1.printStackTrace();
+				}
+				
+				// user is added only if the entered name is valid
+				if(!CheckInvalid) {
 				status.add("r "+u);
 				Person per = null;
 				for(Person i: g.getAllVertices()) {
@@ -428,13 +556,16 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 				
 				setlist(log,g,primaryStage,scene);
 				
-		});
+		}});
 		
-			Button submit = new Button(" submit ");
-			Button  load= new Button (" Load File ");
-			Button export = new Button (" Export ");
+			
+			Button export = new Button (" Save And Exit ");
+			Button Exit = new Button ("Exit");
 			Button clear= new Button (" Clear ");
 			
+			Exit.setOnAction(e->{
+				primaryStage.close();
+			});
 			clear.setOnAction(e->{
 				for(Person i :g.getAllVertices()) {
 					g.removeVertex(i);
@@ -442,28 +573,189 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 				setlist(log,g,primaryStage,scene);
 				System.out.println(g.getAllVertices()+"vertices");
 			});
-    //  submit.setOnAction(e->primaryStage.setScene(mainScene));
-        EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent e)
-            { 	BorderPane root1= new BorderPane();
-            	Person p1=null;
-            	//
-            	for(Person i : g.getAllVertices()) {if(i.getName().equals(text1.getText()))p1=i;}
-            	Scene secondS = new Scene(root1,WINDOW_WIDTH, WINDOW_HEIGHT);
-            	secondS=secondScene(p1,primaryStage,scene);
-            	
-                primaryStage.setScene(secondS);
-                }
-            
-        };
-        
-        
-       	 submit.setOnAction(event1);
-		if(all.size()>0) {
-			text1.setText(all.get(0));
+			
+			
+			//set on action for the Load Button
+	        EventHandler<ActionEvent> event2 = new EventHandler<ActionEvent>() {
+	        	
+	            public void handle(ActionEvent e)
+	            { 	SocialNetwork sw = new SocialNetwork();
+	            
+	        	
+				// dialog box to get the text from the user
+				TextInputDialog dialog = new TextInputDialog("Enter The FULL location for the file to laod");
+				 dialog.setContentText("Path");
+				 dialog.setTitle("Enter the path to Load");
+				 Label label = new Label();
+				Optional<String> result= dialog.showAndWait();
+				 result.ifPresent(name -> {
+					label.setText(name);
+		            });
+				 
+				 
+	boolean LoadValid= true;
+				 
+			
+			//	File file = new File("/Users/BUNNY/eclipse-workspace/HelloFX/src/train");
+				try {File file = new File(label.getText());
+					sw.loadFromFile(file);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					LoadValid=false;
+					Alert alert = new Alert(AlertType.ERROR,"File Not Found");
+					alert.showAndWait().filter(r->r==ButtonType.OK);
+					e1.printStackTrace();
+					
+				}
+				// if the entered file is valid then the fucntion loads
+				if(LoadValid) {
+				// adding the status of the file loaded to the main status 
+				for(String i : sw.Log()) {
+					status.add(i);
+				}
+				//// checking for duplicates and adding the verties to the existing graph 
+				for(Person i : sw.g.getAllVertices()) {
+//					boolean check = false;
+					for(Person j : sw.g.getAdjacentVerticesOf(i)) {
+						Alert InValidName1 = new Alert(AlertType.ERROR,"Accepted person of type , Alphabets , Digits ,Underscore, Apostrophe.");
+						Alert InValidName2 = new Alert(AlertType.ERROR,"Entered Friend is Invalid");
+						boolean CheckInvalid = false;
+						// checking if the name is invalid
+						try {
+							if(!CheckValidName(i.getName())) {
+								InValidName1.showAndWait().filter(r->r==ButtonType.OK);
+								CheckInvalid=true;
+							}
+						} catch (UnsupportedEncodingException e1) {
+							// TODO Auto-generated catch block
+							InValidName1.showAndWait().filter(r->r==ButtonType.OK);
+							e1.printStackTrace();
+						}
+						try {
+							if(!CheckValidName(j.getName())) {
+								InValidName2.showAndWait().filter(r->r==ButtonType.OK);
+								CheckInvalid=true;
+							}
+						} catch (UnsupportedEncodingException e1) {
+							// TODO Auto-generated catch block
+							InValidName2.showAndWait().filter(r->r==ButtonType.OK);
+							e1.printStackTrace();
+						}
+						// user is added only if the entered name is valid
+						if(!CheckInvalid) {
+						g.addEdge(i, j);
+						g.addEdge(j, i);
+					}
+				}}
+				
+				
+			//	g=sw.g;
+				System.out.println("get the string ");
+				for(Person i : g.getAllVertices())
+				System.out.println(i.getName());
+				BorderPane root1= new BorderPane();
+	            	Person p1=null;
+	            	//
+	            	for(Person i : g.getAllVertices()) {
+	            		
+	            		// checking if the person string type is valid or not
+	            		Alert InValidName1 = new Alert(AlertType.ERROR,"Accepted person of type , Alphabets , Digits ,Underscore, Apostrophe.");
+	    			
+	    				boolean CheckInvalid = false;
+	    				// checking if the name is invalid
+	    				try {
+	    					if(!CheckValidName(i.getName())) {
+	    						InValidName1.showAndWait().filter(r->r==ButtonType.OK);
+	    						CheckInvalid=true;
+	    					}
+	    				} catch (UnsupportedEncodingException e1) {
+	    					// TODO Auto-generated catch block
+	    					InValidName1.showAndWait().filter(r->r==ButtonType.OK);
+	    					e1.printStackTrace();
+	    				}
+	    				
+	    				// user is added only if the entered name is valid
+	    				if(!CheckInvalid) {
+	            		
+	            		if(i.getName().equals(text1.getText()))p1=i;}
+	            	if(p1!=null) {
+	            		status.add("s"+p1.getName());
+	            	Scene secondS = new Scene(root1,WINDOW_WIDTH, WINDOW_HEIGHT);
+	            	secondS=secondScene(sw.CenterUser,primaryStage,scene);
+	            	
+	                primaryStage.setScene(secondS);}
+	                }
+	        }
+				for(Person i : g.getAllVertices())
+				System.out.println(i.getName());
+				setlist(log,g,primaryStage,scene);}
+	            };
+	        
+//	        private void showInputTextDialog() {
+//	        	 
+//	            TextInputDialog dialog = new TextInputDialog("Tran");
+//	     
+//	            dialog.setTitle("o7planning");
+//	            dialog.setHeaderText("Enter your name:");
+//	            dialog.setContentText("Name:");
+//	     
+//	            Optional<String> result = dialog.showAndWait();
+//	     
+//	            result.ifPresent(name -> {
+//	                this.label.setText(name);
+//	            });
+//	        }
+	     
+			Button  load= new Button (" Load File ");
+     load.setOnAction(event2);
+
+     
+     
+     // event3 for the set on action for EXPORT button !
+     EventHandler<ActionEvent>event3= new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent e) {
+			
+				SocialNetwork sw = new SocialNetwork();
+		
+				
+				// dialog box to get the text from the user
+				TextInputDialog dialog = new TextInputDialog("Enter The Path To Save the File");
+				 dialog.setContentText("Path");
+				 dialog.setTitle("Enter the path to save");
+				 Label label = new Label();
+				Optional<String> result= dialog.showAndWait();
+				 result.ifPresent(name -> {
+					label.setText(name);
+		            });
+			
+				 /// checking if the file is saved or not
+				 boolean save = true;
+				 
+		// file function to create the file in the given path
+		
+		try {File file = new File(label.getText());
+		sw.saveToFile(file, status);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			save=false;
+			Alert alert = new Alert(AlertType.ERROR,"File Not Found");
+			alert.showAndWait().filter(r->r==ButtonType.OK);
+			e1.printStackTrace();
 		}
-			HBox bot= new HBox();
-			bot.getChildren().addAll(submit,load,export,clear);
+	if(save) {
+		Alert Success = new Alert(AlertType.CONFIRMATION,"SUCCESS !");
+	Success.showAndWait().filter(r->r==ButtonType.OK);
+			}setlist(log,g,primaryStage,scene);
+	}
+			
+			
+			};
+			export.setOnAction(event3);
+     
+			
+			// Hbox to create load export and the clear buttons 
+     HBox bot= new HBox();
+			bot.getChildren().addAll(load,export,Exit,clear);
 			bot.setAlignment(Pos.BOTTOM_CENTER);
 		BorderPane.setAlignment(v, Pos.CENTER);
 		log.setBottom(bot);
@@ -482,7 +774,7 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 		BorderPane.setAlignment(pane, Pos.BOTTOM_CENTER);
 
 		
-		   Button b1 = new Button ("Back");
+		   Button b1 = new Button ("Menu");
 		   b1.setOnAction(e->primaryStage.setScene(scene));
 //	        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
 //	            public void handle(ActionEvent e)
@@ -511,8 +803,14 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
 	
 	/**
 	 * @param args
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+//		SocialNetwork sw = new SocialNetwork();
+//		File file = new File("/Users/BUNNY/eclipse-workspace/HelloFX/src/train");
+//		sw.loadFromFile(file);
+//		g=sw.g;
+//		
 		launch(args);
 	}
 }
