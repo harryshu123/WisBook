@@ -809,6 +809,7 @@ public class Main extends Application {
                     SocialNetwork sw = new SocialNetwork ();
                     Person person1=null;
                     Person person2= null;
+                    // get all cvet
                     for(Person i : g.getAllVertices()) {
                         if(i.getName().equals(p1.getText())) person1=i;
                         if(i.getName().equals(p2.getText()))person2=i;
@@ -817,7 +818,7 @@ public class Main extends Application {
                     gsp.setAlignment(Pos.CENTER);
                     Button back = new Button ("Exit");
                     back.setOnAction(k->{primaryStage.setScene(scene);});
-                    if(p1==null||p2==null) {
+                    if(person1==null||person2==null) {
                         Alert alert= new Alert(AlertType.ERROR,"Person Not found");
                         alert.showAndWait().filter(g->g==ButtonType.OK);
                     }
@@ -898,3 +899,4 @@ public class Main extends Application {
         launch(args);
     }
 }
+
