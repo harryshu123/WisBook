@@ -840,8 +840,6 @@ public class Main extends Application {
                     
                     
                 });
-                
-                
             }
         };
         bb.setOnAction(event4);
