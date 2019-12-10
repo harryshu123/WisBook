@@ -817,14 +817,14 @@ public class Main extends Application {
                     gsp.setAlignment(Pos.CENTER);
                     Button back = new Button ("Exit");
                     back.setOnAction(k->{primaryStage.setScene(scene);});
-                    if(person1==null||person2==null) {
+                    if(p1==null||p2==null) {
                         Alert alert= new Alert(AlertType.ERROR,"Person Not found");
                         alert.showAndWait().filter(g->g==ButtonType.OK);
                     }
                     else {
-                        //                if()
+                        
                         Set<String>PersonSet=sw.getShortestPath(person1, person2, g);
-                        if(PersonSet.size()==0)System.out.println("The Set is Empty");
+                        
                         for(String i : PersonSet) {
                             gsp.getChildren().add(new Text(i));
                             System.out.print(i+" ");
@@ -840,6 +840,8 @@ public class Main extends Application {
                     
                     
                 });
+                
+                
             }
         };
         bb.setOnAction(event4);
@@ -896,4 +898,3 @@ public class Main extends Application {
         launch(args);
     }
 }
-
