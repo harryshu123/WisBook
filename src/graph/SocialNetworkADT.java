@@ -76,7 +76,7 @@ public interface SocialNetworkADT {
 	// check if  both user are present
 	// if both user are present then return aList of Persons containing the shortest path between both the users
 	// if any user is not present throw an empty set
-	public Set<String> getShortestPath(Person f1, Person f2) ;
+	public Set<String> getShortestPath(Person f1, Person f2,Graph g) ;
 	
 	
 	// load the data from file

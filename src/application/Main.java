@@ -256,7 +256,7 @@ Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
            
         	GridPane pane = new GridPane();
    
-
+SocialNetwork sw = new SocialNetwork();
 		// Creates a canvas that can draw shapes and text
 				Canvas canvas = new Canvas(WINDOW_WIDTH*(0.7),  WINDOW_HEIGHT*(0.7));
 				GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -579,7 +579,7 @@ submit.setOnAction(event1);
 	        EventHandler<ActionEvent> event2 = new EventHandler<ActionEvent>() {
 	        	
 	            public void handle(ActionEvent e)
-	            { 	SocialNetwork sw = new SocialNetwork();
+	            { 	
 	            
 	        	
 				// dialog box to get the text from the user
@@ -715,7 +715,7 @@ submit.setOnAction(event1);
      EventHandler<ActionEvent>event3= new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 			
-				SocialNetwork sw = new SocialNetwork();
+				
 		
 				
 				// dialog box to get the text from the user
@@ -759,6 +759,7 @@ submit.setOnAction(event1);
 			bot.setAlignment(Pos.BOTTOM_CENTER);
 		BorderPane.setAlignment(v, Pos.CENTER);
 		log.setBottom(bot);
+		
 		BorderPane.setAlignment(bot, Pos.CENTER);
 		VBox info = new VBox();
 		Text head= new Text("Friends List");
@@ -767,9 +768,90 @@ submit.setOnAction(event1);
 		root.setCenter(info);
 		root.setTop(title);
 		root.setLeft(pane);
-
-		BorderPane.setAlignment(info, Pos.CENTER);
+// Adding the shortest path and the get connected components to the main gui interface
 		
+	VBox rr = new VBox();
+	
+	Button bb = new Button ("Get Shortest Path ");
+	Button bc = new Button ("Get Conencted Componets");
+//	rr.setAlignment(Pos.CENTER_LEFT);
+	//rr.getChildren().add(bb);
+	
+//	EventHandler<ActionEvent> event5= new EventHandler<ActionEvent>() {
+//		public void handle (ActionEvent e) {
+//			
+//		}
+//	};
+	
+	
+	
+	
+	
+	
+	////// for the shortest path
+	EventHandler<ActionEvent>event4= new EventHandler<ActionEvent>(){
+		public void handle (ActionEvent e) {
+			VBox GSP= new VBox();
+
+			Scene s = new Scene(GSP,WINDOW_WIDTH*0.5,WINDOW_HEIGHT*0.5);
+			TextField p1= new TextField("Enter Person1 ");
+			TextField p2= new TextField("Enter Person2");
+			p1.setMaxWidth(WINDOW_HEIGHT*0.5*0.5);
+			p2.setMaxWidth(WINDOW_HEIGHT*0.5*0.5);
+			
+			Button find = new Button("Find");
+			HBox B = new HBox();
+			Button Exit = new Button("Back");
+			B.setAlignment(Pos.CENTER);
+			B.getChildren().addAll(find,Exit);
+			Exit.setOnAction(f->primaryStage.setScene(scene));
+			GSP.getChildren().addAll(p1,p2,B);
+			GSP.setAlignment(Pos.CENTER);
+			primaryStage.setScene(s);
+			VBox persons = new VBox();
+			// finding the person 1 and person 2 of the given inputs
+			
+			find.setOnAction(f->{
+				Scene s1= new Scene(persons,WINDOW_WIDTH*0.5,WINDOW_HEIGHT*0.5);
+			SocialNetwork sw = new SocialNetwork ();
+			Person person1=null;
+			Person person2= null;
+			for(Person i : g.getAllVertices()) {
+				if(i.getName().equals(p1.getText())) person1=i;
+				if(i.getName().equals(p2.getText()))person2=i;
+			}
+			VBox gsp = new VBox();
+			gsp.setAlignment(Pos.CENTER);
+			Button back = new Button ("Exit");
+			back.setOnAction(k->{primaryStage.setScene(scene);});
+			if(person1==null||person2==null) {
+				Alert alert= new Alert(AlertType.ERROR,"Person Not found");
+				alert.showAndWait().filter(g->g==ButtonType.OK);
+			}
+			else {
+				
+				Set<String>PersonSet=sw.getShortestPath(person1, person2, g);
+			for(String i : PersonSet) {
+				System.out.println(i+" ");
+				gsp.getChildren().add(new Text(i));
+			}
+			gsp.getChildren().add(back);
+
+				
+				}
+			});
+		}
+	};
+	bb.setOnAction(event4);
+	rr.setAlignment(Pos.CENTER_LEFT);
+	rr.getChildren().addAll(bb,bc);
+//rr.setAlignment(Pos.CENTER_LEFT);
+//log.getChildren().add(rr);
+log.setRight(rr);
+
+		//BorderPane.setAlignment(Right, Pos.BASELINE_RIGHT);
+		BorderPane.setAlignment(info, Pos.CENTER);
+	//	BorderPane.setAlignment(rr, Pos.CENTER);
 		BorderPane.setAlignment(title, Pos.CENTER);
 		BorderPane.setAlignment(pane, Pos.BOTTOM_CENTER);
 

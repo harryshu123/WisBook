@@ -135,7 +135,7 @@ public class SocialNetwork implements SocialNetworkADT {
 
 
 	@Override
-	public Set<String> getShortestPath(Person f1, Person f2) {
+	public Set<String> getShortestPath(Person f1, Person f2,Graph g1) {
 		// TODO Auto-generated method stub
 		if(f1 == null||f2 == null) {
 			return null;
@@ -145,23 +145,23 @@ public class SocialNetwork implements SocialNetworkADT {
 			return new HashSet();
 		}
 		//constructing the graph to find the shortest path
-		int V = g.getAllVertices().size();
-		String src = f1.name;
+		int V = g1.getAllVertices().size();
+		String src = f1.getName();
 		
 		// Adjacency list representation of the  
         // connected edges 
         HashMap<String,List<Node> > adj = new HashMap<String,List<Node> >();
      
         // Initialize list for every node 
-        for(Person p: g.getAllVertices()) {
+        for(Person p: g1.getAllVertices()) {
         	List<Node> item = new ArrayList<Node>(); 
-            adj.put(p.name, item);
+            adj.put(p.getName(), item);
         }
         
      // Inputs for the DPQ graph 
-        for(List<Person> l: g.adjList) {
+        for(List<Person> l: g1.adjList) {
         	for(int i=1;i<l.size();i++) {
-        		adj.get(l.get(0).name).add(new Node(l.get(i).name,1));
+        		adj.get(l.get(0).getName()).add(new Node(l.get(i).getName(),1));
         	}
         }
         // Calculate the single source shortest path 
@@ -170,10 +170,10 @@ public class SocialNetwork implements SocialNetworkADT {
         
         //right now we have the distance map
         //and parent hashmap
-        String dest = f2.name;
+        String dest = f2.getName();
         int cycle = 0;
         Set<String> result = new HashSet<String>();
-        while(!dest.equals(f1.name)) {
+        while(!dest.equals(f1.getName())) {
         	//check
         	if(cycle > V) {
         		System.out.println("something wrong!!!");

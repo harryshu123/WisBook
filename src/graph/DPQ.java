@@ -49,7 +49,6 @@ import java.util.Set;
 	            // remove the minimum distance node  
 	            // from the priority queue  
 	            String u = pq.remove().node; 
-	  
 	            // adding the node whose distance is 
 	            // finalized 
 	            settled.add(u); 
