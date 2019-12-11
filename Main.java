@@ -798,12 +798,11 @@ public class Main extends Application {
         Text head= new Text("Friends List");
         info.getChildren().add(head);
         info.setAlignment(Pos.TOP_RIGHT);
-        Image image = new Image("https://image.businessinsider.com/5dc569047eece54365510ae2?width=1100&format=jpeg&auto=webp");
-        ImageView imageView = new ImageView();
-        imageView.setImage(image);
+        
 
 
-        root.setLeft(imageView);
+        
+        //root.setLeft(imageView);
         root.setCenter(info);
         root.setTop(title);
         root.setLeft(pane);
@@ -924,6 +923,12 @@ public class Main extends Application {
         //rr.setAlignment(Pos.CENTER_LEFT);
         //log.getChildren().add(rr);
         log.setRight(rr);
+        Image image = new Image("https://image.businessinsider.com/5dc569047eece54365510ae2?width=1100&format=jpeg&auto=webp");
+        ImageView imageView = new ImageView();
+        imageView.setImage(image);
+        imageView.setFitHeight(500);
+        imageView.setFitWidth(450);
+        log.setCenter(imageView);
 
         //BorderPane.setAlignment(Right, Pos.BASELINE_RIGHT);
         BorderPane.setAlignment(info, Pos.CENTER);
