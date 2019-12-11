@@ -2,7 +2,7 @@
  Team : A40
  Project a2(Initial GUI page) Social Network
  Team Members : Chokkarapu Sai Teja , Lintong Han, Zhihao Shu , Lakshay
- Date : 12/2/19
+ Date : 12/11/19
  */
 
 
@@ -69,27 +69,27 @@ import javafx.stage.Stage;
 public class Main extends Application {
     class vector{
         int x,y;
-        
+
         vector(int a, int b){
             x=a;
             y=b;
         }
     };
-    
+
     static Graph g = new Graph();
     int fl=5;
     // store any command-line arguments that were entered.
     // NOTE: this.getParameters().getRaw() will get these also
     private List<Person> args;
     List<String> status=new ArrayList<String>();
-    
+
     private static final int WINDOW_WIDTH = 900;
     private static final int WINDOW_HEIGHT = 800;
     private static final String APP_TITLE = "Hello to WisBook!";
-    
-    
+
+
     int c =15;
-    
+
     private boolean CheckValidName(String s) throws UnsupportedEncodingException
     {boolean res=true;
         byte[] bytes = s.getBytes("US-ASCII");
@@ -100,20 +100,20 @@ public class Main extends Application {
     }
     //first page friends list
     private void setlist(BorderPane log,Graph g,Stage primaryStage,Scene scene) {
-        
+
         Set<Person>s=g.getAllVertices();
         Set<Person>user= new HashSet<Person>();
         System.out.println(s+"this is set");
-        
+
         ListView<Button> list1 = new ListView<Button>();
-        
+
         for(Person i : s ) {  System.out.println("when remove is pressed"+s.size());
             Button b3;
             System.out.print(i.getName()+" ");
-            
+
             b3 = new Button (i.getName());
-            
-            
+
+
             list1.getItems().add(b3);
             EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
                 public void handle(ActionEvent e)
@@ -122,27 +122,27 @@ public class Main extends Application {
                     for(Person i : g.getAllVertices()) {if(i.getName().equals(b3.getText()))per=i;}
                     Scene secondS = new Scene(root1,WINDOW_WIDTH, WINDOW_HEIGHT);
                     secondS=secondScene(per,primaryStage,scene);
-                    
+
                     primaryStage.setScene(secondS);
                 }
-                
-                
+
+
             };
             b3.setOnAction(event1);
             //System.out.print(i);
         }log.setCenter(list1);System.out.println("DONEZO");
-        
+
     }
-    
-    
+
+
     //2nd Page friends list
     private ListView<Button> setlist2(BorderPane info,Graph g,Person text1,Stage primaryStage,Scene scene) {
-        
+
         String center=text1.getName();
         ListView<Button> list = new ListView<Button>();
         // f is the friends of the center person
         List<Person> f=g.getAdjacentVerticesOf(text1);
-        
+
         for(Person i : f) {
             Button b;
             b = new Button (i.getName());
@@ -154,19 +154,19 @@ public class Main extends Application {
                     for(Person i : g.getAllVertices()) {if(i.getName().equals(b.getText()))per=i;}
                     Scene secondS = new Scene(root1,WINDOW_WIDTH, WINDOW_HEIGHT);
                     secondS=secondScene(per,primaryStage,scene);
-                    
+
                     primaryStage.setScene(secondS);
                 }
-                
-                
+
+
             };
             b.setOnAction(event1);
         }
         info.setRight(list);
         return list;
-        
+
     }
-    
+
     private GridPane ani_graph(Canvas canvas,GraphicsContext gc,Person text1) {gc.setFill(Color.BLUE);
         HashMap<Integer,vector> map = new HashMap<Integer,vector>();
         //HashMap<Integer,vector> map1 = new HashMap<Integer,vector>();
@@ -186,36 +186,36 @@ public class Main extends Application {
         System.out.println(" this is text 1"+text1);
         int f1 =0;
         for(Map.Entry<Integer, vector> i : map.entrySet()) {
-            
+
             if(f1<friends.size()) {
                 System.out.println("hello macha "+friends.get(f1));
                 String k=friends.get(f1++).getName();
                 gc.fillText(k,    i.getValue().x,i.getValue().y-10);}
             else break;
             gc.fillOval(i.getValue().x,i.getValue().y, 30, 30);
-            
-            
+
+
             gc.setStroke(Color.BLUE);
-            
+
             gc.setLineWidth(2);
             gc.strokeLine(350+c, 350+c, i.getValue().x+c, i.getValue().y+c);
         }
-        
-        
+
+
         // Draw a few circles
         gc.setFill(Color.BLACK);
-        
+
         // center
         gc.fillText(text1.getName(),350,350-10);
         gc.setFill(Color.RED);
         gc.fillOval(350,350, 30, 30);
         return pane;
         //    pane.getChildren().add(canvas);
-        
-        
+
+
     }
     Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
-        
+
         GridPane pane = new GridPane();
         Canvas canvas = new Canvas(WINDOW_WIDTH*(0.7), WINDOW_HEIGHT*(0.7));
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -234,7 +234,7 @@ public class Main extends Application {
         HB.setAlignment(Pos.CENTER);
         BorderPane.setAlignment(b1, Pos.CENTER);
         list=setlist2(root,g,text1,primaryStage,scene);
-        
+
         VBox info = new VBox();
         Text head= new Text("Friends List");
         info.getChildren().add(head);
@@ -244,14 +244,14 @@ public class Main extends Application {
         pane.setStyle("-fx-background-colour: #6495ed;");
         BorderPane.setAlignment(info, Pos.CENTER);
         //BorderPane.setAlignment(pane, Pos.BOTTOM_CENTER);
-        
+
         return mainScene;
-        
+
     }
     @Override
     public void start(Stage primaryStage) throws Exception {
-        
-        
+
+
         TextField text1 = new TextField("Enter Center Person");
         TextField text2 = new TextField("Enter Friend's name");
         TextField text3 = new TextField("Enter the User");
@@ -260,61 +260,61 @@ public class Main extends Application {
         text3.setFont(Font.font ("Verdana", 15));
         // save args example
         //        args = this.getParameters().getRaw();
-        
+
         //set top label
         Label title = new Label("WisBook");
-        
+
         GridPane pane = new GridPane();
-        
-        
+
+
         // Creates a canvas that can draw shapes and text
         Canvas canvas = new Canvas(WINDOW_WIDTH*(0.7),  WINDOW_HEIGHT*(0.7));
-       
+
         GraphicsContext gc = canvas.getGraphicsContext2D();
         // Write some text
         // Text is filled with the fill color
-        
-        
+
+
         //bottom button
         System.out.println(c);
-        
+
         BorderPane root = new BorderPane();
-        
+
         //log page
         BorderPane log = new BorderPane();
-        
+
         Scene scene = new Scene(log,WINDOW_WIDTH, WINDOW_HEIGHT,Color.BEIGE);
-        
+
         Scene mainScene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT,Color.CHOCOLATE);
-        
+
         // popup window
-        
-        
+
+
         // for the entrance top of the main scene
         Text t = new Text("People in Social Network");
         log.setTop(t);
         log.setAlignment(t, Pos.CENTER);
-        
-        
-        
-        
+
+
+
+
         /// submit button
         Button submit = new Button(" Search ");
-        
+
         Text search = new Text("\nSearch\n");
         search.setFont(Font.font(java.awt.Font.SERIF, 25));
-        
+
         TextField searcht = new TextField("ENTER PERSON TO BE SEARCHED");
         searcht.setFont(Font.font ("Verdana", 10));
-        
-        
-       
-        
+
+
+
+
         VBox Vsearch = new VBox();
         Vsearch.getChildren().addAll(search,searcht,submit);
         Vsearch.setStyle("-fx-background-colour: #ffe4c4;");
         Vsearch.setSpacing(10);
-        
+
         //  submit.setOnAction(e->primaryStage.setScene(mainScene));
         EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e)
@@ -329,7 +329,7 @@ public class Main extends Application {
                 }
                 else {
                     secondS=secondScene(p1,primaryStage,scene);
-                    
+
                     primaryStage.setScene(secondS);}
             }
         };
@@ -342,7 +342,7 @@ public class Main extends Application {
         Button AddUser= new Button ("ADD User");
         Button RemoveUser = new Button ("Remove User");
         VBox v = new VBox();
-        
+
         v.getChildren().addAll(heading,text3,AddUser,RemoveUser);
         v.setSpacing(10);
         v.setStyle("-fx-background-color: #f0f8ff;");
@@ -351,29 +351,29 @@ public class Main extends Application {
         // ADD and re3move for main page
         Button ADD = new Button ("ADD");
         Button Rem= new Button ("Remove");
-        
-        
+
+
         //Hbox for add and remove
         HBox hb = new HBox();
-       
-        
+
+
         //adding color
         hb.setStyle("-fx-background-color: #f0f8ff;");
         hb.setSpacing(20);
-        
-        
+
+
         /// all the enter person unable to use Person inside the scope of the EventHandler so used a list.
         List<String>all= new ArrayList<String>();
         v.getChildren().addAll(heading2,text1,text2,hb,Vsearch);
         hb.getChildren().addAll(ADD,Rem);
-        
-        
-        
-        
+
+
+
+
         // setting the action for the ADD button
         ADD.setOnAction(e->{
-            
-            
+
+
             String cp= text1.getText();
             String friend= text2.getText();
             // checking if the entered user or the friend is valid
@@ -406,21 +406,21 @@ public class Main extends Application {
                 Person p1= new Person(cp);
                 Person p2=new Person (friend);
                 //adding to the word
-                
+
                 // 0 index is the center person .
                 all.add(0,cp);
                 Alert a =new Alert(AlertType.ERROR,"\""+"Two persons are with the same name");
-                
-                
+
+
                 Alert  alert1= new Alert(AlertType.ERROR,"\""+" xx DO NOT ENTER NULL INPUT xx");
                 // "check" is to check if the Centerperson friend is added to the graph or not
-                
+
                 boolean check=false;
                 //    boolean_
                 Person pcp=null;
                 Person fcp=null;
                 for(Person i :g.getAllVertices()) {if(i.getName().equals(cp))pcp=i;
-                    
+
                     if(i.getName().equals(friend))fcp=i;
                 }
                 if(pcp!=null) {
@@ -433,13 +433,13 @@ public class Main extends Application {
                     }
                 }if(cp.equals(friend)||(cp==null||friend==null))a.showAndWait().filter(r->r==ButtonType.OK);
                 else if (cp.length()==0||friend.length()==0) {
-                    
+
                     alert1.showAndWait().filter(r->r==(ButtonType.OK));}
                 else if(check==false) {g.addEdge(p1, p2);
                     g.addEdge(p2, p1);
                 }
-                
-                
+
+
                 else if (cp.length()==0&&friend.length()!=0)g.addVertex(fcp);
                 else if (friend.length()!=0&&cp.length()==0)g.addVertex(pcp);
                 System.out.println("size "+g.size());
@@ -451,11 +451,11 @@ public class Main extends Application {
                 //ani_graph(pane,canvas,gc,text1.getText());
                 System.out.println(all);}
         });
-        
-        
-        
-        
-        
+
+
+
+
+
         // setting the action for remove
         Rem.setOnAction(e->{
             String cp= text1.getText();
@@ -492,24 +492,24 @@ public class Main extends Application {
                 boolean check=false;
                 Person Center = null,Friend=null;
                 for(Person i :g.getAllVertices()) {if(i.getName().equals(cp))Center=i;}
-                
+
                 List<Person> ff=g.getAdjacentVerticesOf(Center);
-                
+
                 // checking if the center person is the friend the current one or not
-                
-                
+
+
                 for(Person i : ff) {
                     if(i.getName().equals(friend)) {Friend=i;check=true;}}
-                
+
                 if(!check) {
                     Alert alert = new Alert(AlertType.ERROR,"\""+cp+"\""+" is NOT friend to "+"\""+friend+"\"");
                     alert.showAndWait().filter(r->r==ButtonType.OK);}
-                
+
                 else {g.removeEdge(Center,Friend);}
-                
-                
+
+
                 for(Person i : ff) {
-                    
+
                     System.out.println("size "+g.size());}
                 setlist(log,g,primaryStage,scene);
                 //setlist2(root,g,text1.getText());
@@ -518,11 +518,11 @@ public class Main extends Application {
                 //ani_graph(pane,canvas,gc,text1.getText());
                 System.out.println(all);}
         });
-        
-        
+
+
         // add the user
         AddUser.setOnAction(e->{
-            
+
             boolean check =false;
             String u= text3.getText();
             Alert InValidName1 = new Alert(AlertType.ERROR,"Accepted person of type , Alphabets , Digits ,Underscore, Apostrophe.");
@@ -538,7 +538,7 @@ public class Main extends Application {
                 InValidName1.showAndWait().filter(r->r==ButtonType.OK);
                 e1.printStackTrace();
             }
-            
+
             // user is added only if the entered name is valid
             if(!CheckInvalid) {
                 //adding to the log
@@ -550,7 +550,7 @@ public class Main extends Application {
                 if(!check) {
                     g.addVertex(per);
                 }
-                
+
                 setlist(log,g,primaryStage,scene);
             }
         });
@@ -571,7 +571,7 @@ public class Main extends Application {
                 InValidName1.showAndWait().filter(r->r==ButtonType.OK);
                 e1.printStackTrace();
             }
-            
+
             // user is added only if the entered name is valid
             if(!CheckInvalid) {
                 status.add("r "+u);
@@ -583,16 +583,16 @@ public class Main extends Application {
                     g.removeVertex(per);
                     System.out.println(g.getAllVertices());
                 }
-                
+
                 setlist(log,g,primaryStage,scene);
-                
+
             }});
-        
-        
+
+
         Button export = new Button (" Save And Exit ");
         Button Exit = new Button ("Exit");
         Button clear= new Button (" Clear ");
-        
+
         Exit.setOnAction(e->{
             primaryStage.close();
         });
@@ -603,15 +603,15 @@ public class Main extends Application {
             setlist(log,g,primaryStage,scene);
             System.out.println(g.getAllVertices()+"vertices");
         });
-        
-        
+
+
         //set on action for the Load Button
         EventHandler<ActionEvent> event2 = new EventHandler<ActionEvent>() {
-            
+
             public void handle(ActionEvent e)
             {     SocialNetwork sw = new SocialNetwork();
-                
-                
+
+
                 // dialog box to get the text from the user
                 TextInputDialog dialog = new TextInputDialog("Enter The FULL location for the file to laod");
                 dialog.setContentText("Path");
@@ -621,11 +621,11 @@ public class Main extends Application {
                 result.ifPresent(name -> {
                     label.setText(name);
                 });
-                
-                
+
+
                 boolean LoadValid= true;
-                
-                
+
+
                 //    File file = new File("/Users/BUNNY/eclipse-workspace/HelloFX/src/train");
                 try {File file = new File(label.getText());
                     sw.loadFromFile(file);
@@ -635,7 +635,7 @@ public class Main extends Application {
                     Alert alert = new Alert(AlertType.ERROR,"File Not Found");
                     alert.showAndWait().filter(r->r==ButtonType.OK);
                     e1.printStackTrace();
-                    
+
                 }
                 // if the entered file is valid then the fucntion loads
                 if(LoadValid) {
@@ -677,8 +677,8 @@ public class Main extends Application {
                                 g.addEdge(j, i);
                             }
                         }}
-                    
-                    
+
+
                     //    g=sw.g;
                     System.out.println("get the string ");
                     for(Person i : g.getAllVertices())
@@ -687,10 +687,10 @@ public class Main extends Application {
                     Person p1=null;
                     //
                     for(Person i : g.getAllVertices()) {
-                        
+
                         // checking if the person string type is valid or not
                         Alert InValidName1 = new Alert(AlertType.ERROR,"Accepted person of type , Alphabets , Digits ,Underscore, Apostrophe.");
-                        
+
                         boolean CheckInvalid = false;
                         // checking if the name is invalid
                         try {
@@ -703,16 +703,16 @@ public class Main extends Application {
                             InValidName1.showAndWait().filter(r->r==ButtonType.OK);
                             e1.printStackTrace();
                         }
-                        
+
                         // user is added only if the entered name is valid
                         if(!CheckInvalid) {
-                            
+
                             if(i.getName().equals(text1.getText()))p1=i;}
                         if(p1!=null) {
                             status.add("s"+p1.getName());
                             Scene secondS = new Scene(root1,WINDOW_WIDTH, WINDOW_HEIGHT);
                             secondS=secondScene(sw.CenterUser,primaryStage,scene);
-                            
+
                             primaryStage.setScene(secondS);}
                     }
                 }
@@ -720,7 +720,7 @@ public class Main extends Application {
                     System.out.println(i.getName());
                 setlist(log,g,primaryStage,scene);}
         };
-        
+
         //            private void showInputTextDialog() {
         //
         //                TextInputDialog dialog = new TextInputDialog("Tran");
@@ -735,19 +735,19 @@ public class Main extends Application {
         //                    this.label.setText(name);
         //                });
         //            }
-        
+
         Button  load= new Button (" Load File ");
         load.setOnAction(event2);
-        
-        
-        
+
+
+
         // event3 for the set on action for EXPORT button !
         EventHandler<ActionEvent>event3= new EventHandler<ActionEvent>() {
             public void handle(ActionEvent e) {
-                
+
                 SocialNetwork sw = new SocialNetwork();
-                
-                
+
+
                 // dialog box to get the text from the user
                 TextInputDialog dialog = new TextInputDialog("Enter The Path To Save the File");
                 dialog.setContentText("Path");
@@ -757,12 +757,12 @@ public class Main extends Application {
                 result.ifPresent(name -> {
                     label.setText(name);
                 });
-                
+
                 /// checking if the file is saved or not
                 boolean save = true;
-                
+
                 // file function to create the file in the given path
-                
+
                 try {File file = new File(label.getText());
                     sw.saveToFile(file, status);
                 } catch (IOException e1) {
@@ -777,12 +777,12 @@ public class Main extends Application {
                     Success.showAndWait().filter(r->r==ButtonType.OK);
                 }setlist(log,g,primaryStage,scene);
             }
-            
-            
+
+
         };
         export.setOnAction(event3);
-        
-        
+
+
         // Hbox to create load export and the clear buttons
         HBox bot= new HBox();
         bot.getChildren().addAll(load,export,Exit,clear);
@@ -790,9 +790,9 @@ public class Main extends Application {
         BorderPane.setAlignment(v, Pos.CENTER);
         bot.setSpacing(15);
         bot.setStyle("-fx-background-color: #f0f8ff;");
-        
+
         log.setBottom(bot);
-        
+
         BorderPane.setAlignment(bot, Pos.CENTER);
         VBox info = new VBox();
         Text head= new Text("Friends List");
@@ -801,21 +801,21 @@ public class Main extends Application {
         Image image = new Image("https://image.businessinsider.com/5dc569047eece54365510ae2?width=1100&format=jpeg&auto=webp");
         ImageView imageView = new ImageView();
         imageView.setImage(image);
-        
-        
+
+
         root.setLeft(imageView);
         root.setCenter(info);
         root.setTop(title);
         root.setLeft(pane);
         // Adding the shortest path and the get connected components to the main gui interface
-        
+
         VBox rr = new VBox();
-        
+
         Button bb = new Button ("Get Shortest Path ");
         Button bc = new Button ("Get Conencted Componets");
         //    rr.setAlignment(Pos.CENTER_LEFT);
         //rr.getChildren().add(bb);
-        
+
         //    EventHandler<ActionEvent> event5= new EventHandler<ActionEvent>() {
         //        public void handle (ActionEvent e) {
         //
@@ -824,13 +824,13 @@ public class Main extends Application {
         EventHandler<ActionEvent>event4= new EventHandler<ActionEvent>(){
             public void handle (ActionEvent e) {
                 VBox GSP= new VBox();
-                
+
                 Scene s = new Scene(GSP,WINDOW_WIDTH*0.5,WINDOW_HEIGHT*0.5);
                 TextField p1= new TextField("Enter Person1 ");
                 TextField p2= new TextField("Enter Person2");
                 p1.setMaxWidth(WINDOW_HEIGHT*0.5*0.5);
                 p2.setMaxWidth(WINDOW_HEIGHT*0.5*0.5);
-                
+
                 Button find = new Button("Find");
                 HBox B = new HBox();
                 Button Exit = new Button("Back");
@@ -842,7 +842,7 @@ public class Main extends Application {
                 primaryStage.setScene(s);
                 VBox persons = new VBox();
                 // finding the person 1 and person 2 of the given inputs
-                
+
                 find.setOnAction(f->{
                     Scene s1= new Scene(persons,WINDOW_WIDTH*0.5,WINDOW_HEIGHT*0.5);
                     SocialNetwork sw = new SocialNetwork ();
@@ -854,7 +854,7 @@ public class Main extends Application {
                     }
                     System.out.println("person1 " + person1);
                     System.out.println("person2 " + person2);
-                    
+
                     VBox gsp = new VBox();
                     gsp.setAlignment(Pos.CENTER);
                     Button back = new Button ("Exit");
@@ -868,8 +868,8 @@ public class Main extends Application {
                     	List<String> PersonSet = null;
                         try {
                         PersonSet=sw.getShortestPath(person1, person2, g);
-                        
-                  
+
+
                         }catch (Exception exx) {
                         	Alert alert= new Alert(AlertType.ERROR,"No path to that Person!!!");
                             alert.showAndWait().filter(g->g==ButtonType.OK);
@@ -885,31 +885,54 @@ public class Main extends Application {
                         gsp.getChildren().add(exit);
                         Scene s3= new Scene(gsp,WINDOW_WIDTH*0.5,WINDOW_HEIGHT*0.5);
                         primaryStage.setScene(s3);
-                        
-                        
+
+
                     }
-                    
-                    
+
+
                 });
-                
-                
+
+
             }
         };
         bb.setOnAction(event4);
+
+	 /// bc (Number of connected components or number of graphs) set on action
+        Text t3= new Text("The number of connected componens are :\n");
+        bc.setOnAction(e->{
+        	SocialNetwork sw = new SocialNetwork();
+        	System.out.println(sw.getConnectedComponents(g));
+        	System.out.println("the conneted components are ");
+        	VBox h= new VBox();
+        	
+        	
+        	
+        	Text text = new Text(Integer.toString(sw.getConnectedComponents(g))+"\n");
+        	h.setAlignment(Pos.CENTER);
+        	Button b = new Button ("Exit");
+        	b.setOnAction(f->{primaryStage.setScene(scene);});
+        	h.getChildren().addAll(t3,text,b);
+        	
+        	
+        	Scene scene1= new Scene(h,WINDOW_HEIGHT,WINDOW_HEIGHT);
+        	primaryStage.setScene(scene1);
+        	
+        });
+
         rr.setAlignment(Pos.CENTER_LEFT);
         rr.getChildren().addAll(bb,bc);
         //rr.setAlignment(Pos.CENTER_LEFT);
         //log.getChildren().add(rr);
         log.setRight(rr);
-        
+
         //BorderPane.setAlignment(Right, Pos.BASELINE_RIGHT);
         BorderPane.setAlignment(info, Pos.CENTER);
         //    BorderPane.setAlignment(rr, Pos.CENTER);
         BorderPane.setAlignment(title, Pos.CENTER);
         BorderPane.setAlignment(pane, Pos.BOTTOM_CENTER);
-      
-        
-        
+
+
+
         Button b1 = new Button ("Menu");
         b1.setOnAction(e->primaryStage.setScene(scene));
         //            EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
@@ -925,20 +948,20 @@ public class Main extends Application {
         root.setBottom(b1);
         BorderPane.setAlignment(b1, Pos.CENTER);
         //             b1.setOnAction(event);
-        
+
         //            System.out.pri
-        
+
         BorderPane.setAlignment(submit, Pos.CENTER);
         // Add the stuff and set the primary stage
         primaryStage.setTitle(APP_TITLE);
         //        primaryStage.setScene(mainScene);
-        
+
         scene.setFill(Color.AQUA);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-    
-    
+
+
     /**
      * @param args
      * @throws IOException
