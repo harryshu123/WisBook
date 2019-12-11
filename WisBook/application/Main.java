@@ -82,8 +82,8 @@ public class Main extends Application {
     private List<Person> args;
     List<String> status=new ArrayList<String>();
     
-    private static final int WINDOW_WIDTH = 1000;
-    private static final int WINDOW_HEIGHT = 1000;
+    private static final int WINDOW_WIDTH = 900;
+    private static final int WINDOW_HEIGHT = 900;
     private static final String APP_TITLE = "Hello to WisBook!";
     
     
@@ -216,7 +216,7 @@ public class Main extends Application {
     Scene secondScene(Person text1,Stage primaryStage,Scene scene) {
         
         GridPane pane = new GridPane();
-        Canvas canvas = new Canvas(WINDOW_WIDTH*(0.7), WINDOW_HEIGHT*(0.7));
+        Canvas canvas = new Canvas(WINDOW_WIDTH*(0.7), WINDOW_HEIGHT*0.7);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         BorderPane root= new BorderPane();
         ListView<Button> list= new ListView<Button>();
@@ -524,6 +524,9 @@ public class Main extends Application {
                 setlist(log,g,primaryStage,scene);
             }
         });
+        
+        
+       
         // remove the user
         RemoveUser.setOnAction(e->{
             boolean check =false;
@@ -591,11 +594,7 @@ public class Main extends Application {
                 result.ifPresent(name -> {
                     label.setText(name);
                 });
-                
-                
                 boolean LoadValid= true;
-                
-                
                 //    File file = new File("/Users/BUNNY/eclipse-workspace/HelloFX/src/train");
                 try {File file = new File(label.getText());
                     sw.loadFromFile(file);
@@ -690,6 +689,7 @@ public class Main extends Application {
                     System.out.println(i.getName());
                 setlist(log,g,primaryStage,scene);}
         };
+        
         
         //            private void showInputTextDialog() {
         //
@@ -846,17 +846,36 @@ public class Main extends Application {
                         gsp.getChildren().add(exit);
                         Scene s3= new Scene(gsp,WINDOW_WIDTH*0.5,WINDOW_HEIGHT*0.5);
                         primaryStage.setScene(s3);
-                        
-                        
                     }
-                    
-                    
-                });
-                
-                
-            }
+                		} 
+   );
+           }
         };
         bb.setOnAction(event4);
+        
+        
+        	
+        /// bc (Number of connected components or number of graphs) set on action
+        Text t3= new Text("The number of connected componens are :\n");
+        bc.setOnAction(e->{
+        	SocialNetwork sw = new SocialNetwork();
+        	System.out.println(sw.getConnectedComponents(g));
+        	System.out.println("the conneted components are ");
+        	VBox h= new VBox();
+        	
+        	
+        	
+        	Text text = new Text(Integer.toString(sw.getConnectedComponents(g))+"\n");
+        	h.setAlignment(Pos.CENTER);
+        	Button b = new Button ("Exit");
+        	b.setOnAction(f->{primaryStage.setScene(scene);});
+        	h.getChildren().addAll(t3,text,b);
+        	
+        	
+        	Scene scene1= new Scene(h,WINDOW_HEIGHT,WINDOW_HEIGHT);
+        	primaryStage.setScene(scene1);
+        	
+        });
         rr.setAlignment(Pos.CENTER_LEFT);
         rr.getChildren().addAll(bb,bc);
         //rr.setAlignment(Pos.CENTER_LEFT);
@@ -872,16 +891,7 @@ public class Main extends Application {
         
         Button b1 = new Button ("Menu");
         b1.setOnAction(e->primaryStage.setScene(scene));
-        //            EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-        //                public void handle(ActionEvent e)
-        //                {
-        //
-        //
-        //                    primaryStage.show();
-        //                    primaryStage.setScene(page2);
-        //
-        //                }
-        //            };
+       
         root.setBottom(b1);
         BorderPane.setAlignment(b1, Pos.CENTER);
         //             b1.setOnAction(event);
